@@ -1,0 +1,433 @@
+/* 
+---------------------------------------------
+MAX CONTAINER
+--------------------------------------------- 
+*/
+.custom-container {
+    max-width: 98%;
+    width: 100%;
+    margin: auto;
+}
+
+/*
+---------------------------------------------
+COLORES
+--------------------------------------------- 
+*/
+
+/* .bg-navbar {
+    background-color: inherit;
+} */
+.bg-topbar {
+    background-color: rgb(249, 165, 6);
+}
+.bg-navbar {
+    background: #fff !important;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+.bg-footer {
+    background: #c00d13c7;
+}
+.bg-thead {
+    background-color: #c00d13c7 !important;
+    color: #fffffff4 !important;
+}
+.bg-btn {
+    background-color: #c00d13d6 !important;
+    color: #fffffff4 !important;
+}
+
+.bg-btn:hover {
+    background-color: #611316d6 !important;
+    color: #fffffff4 !important;
+}
+
+/* Boton */
+/* .bg-footer {
+    background-color: #fc0709;
+}
+ */
+
+/* Color Fondo */
+.content, .content-header, #wrapper #content-wrapper {
+    background-color: inherit; 
+}
+.enlace {
+    text-decoration: none;
+    color: inherit;
+}
+.enlace:hover {
+    color: black;
+}
+
+/* 
+---------------------------------------------
+ESTILOS DE LA HORA
+--------------------------------------------- 
+*/
+.hora {
+    font-size: 0.9em; 
+    color: #666;
+}
+/* 
+---------------------------------------------
+OVALO DE ESTADOS
+--------------------------------------------- 
+*/
+.estado-activo, .estado-inactivo, .estado-pendiente {
+    display: inline-block;
+    width: 75px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    align-content: center;
+}
+.estado-activo.general{
+    background-color:rgb(129, 214, 149); /* Verde para activo */
+    color: rgb(33, 64, 40);
+}
+.estado-inactivo.general{
+    background-color:rgb(246, 149, 158); /* Rojo para inactivo */
+    color: rgb(85, 29, 34);
+}
+.estado-pendiente.pedidos {
+    width: 98px;
+    background-color:rgb(248, 133, 56); /* Naranja para pendiente */
+    color: rgb(72, 44, 0);
+}
+
+.total-pedido {
+    font-size: 20px;
+    font-weight: bold;
+    color: #4b962a;
+}
+
+/* 
+---------------------------------------------
+BOTON REGRESAR
+--------------------------------------------- 
+*/
+.button-back {
+    display: inline-block;
+    text-decoration: none;
+    color: inherit;
+    font-size: 1rem;
+    padding: 5px 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.button-back:hover {
+    color: #fffe;
+    background-color: #ff060ab7;
+}
+
+.card-body select, .card-body textarea, .card-body input {
+    border: 1px solid#a4a4a4;
+    border-radius: 5px;
+}
+
+label {
+    font-weight: 500;
+}
+
+.style-swal{
+    width: 450px;
+}
+
+.user-menu:hover {
+    background-color: #1c7fbd;
+    transition: .6s;
+}
+
+
+/* 
+---------------------------------------------
+TEXTAREA
+--------------------------------------------- 
+*/
+textarea {
+    resize: none;
+}
+
+.logo-x {
+    font-family: sans-serif;
+    font-size: 15px;
+    font-weight: bolder;
+    padding: 0 2px;
+}
+
+/* 
+---------------------------------------------
+TABLA
+--------------------------------------------- 
+*/
+
+/* Cambia el tamaño de letra de toda la tabla */
+.custom-table {
+    font-size: 14px;
+}
+/* Opcional: Cambia el tamaño de los encabezados de la tabla */
+.custom-table th {
+    font-size: 14px;
+}
+/* Cambia el tamaño del texto de los controles del DataTable */
+.dataTables_wrapper {
+    font-size: 14px;
+}
+tr {
+    cursor: pointer;
+}
+
+div#table_length {
+    margin: 2px 0 10px 0;
+}
+/* Info de registros */
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 1em;
+    padding-bottom: .4em;
+}
+select.form-selected.form-select-sm:focus {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    margin-top: 10px;
+}
+.pagination > li > a, .pagination > li > span{
+    color:#000000a4;
+    font-weight: bold;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.pagination > li > a:hover, .pagination > li > span{
+    color:#000000a4;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+/* Numeros de Paginacion */
+.pagination > li.active > a, .pagination > li.active > span{
+    background-color:#c62d38 !important;
+    border-color: transparent !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+.pagination > li.previous > a, .pagination > li.next > a {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+/* Botones "Anterior" y "Siguiente" */
+.pagination > li.previous:hover > a, .pagination > li.next:hover > a {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+/* Bordes Thead */
+table.dataTable thead th:first-child {
+    border-top-left-radius: 10px;
+}
+table.dataTable thead th:last-child {
+    border-top-right-radius: 10px;
+}
+
+/* 
+---------------------------------------------
+LOGO IMAGEN
+--------------------------------------------- 
+*/
+.sidebar-brand {
+    text-align: center !important;
+}
+.logo-sidebar {
+    width: 60%;
+}
+
+.btn-eliminar {
+    padding: 4px 10px;
+    font-weight: bolder;
+}
+
+/* 
+---------------------------------------------
+sidebarToggle (Boton menu mobile)
+--------------------------------------------- 
+*/
+#sidebarToggleTop:focus, 
+#sidebarToggleTop:active {
+    outline: 2px solid #DC3545; /* Contorno rojo */
+    box-shadow: 0 0 2px #DC3545; /* Resplandor rojo */
+    background-color: #212529; /* Fondo oscuro */
+    color: white; /* Color del icono */
+}
+body.sidebar-toggled #sidebarToggleTop {
+    background-color: #212529 !important; 
+    color: white !important;
+}
+#sidebarToggleTop {
+    border-radius: 0 5px 5px 0 !important;
+}
+/* 
+---------------------------------------------
+Fondo Resumen
+--------------------------------------------- 
+*/
+.statistics-item h2 {
+    background-color:rgb(238, 229, 58);
+    color: black;
+    padding: 10px;   
+    border-radius: 10px;
+    display: inline-block;
+    text-align: center; 
+    width: 120px;
+}
+/* 
+---------------------------------------------
+Quitar Hover
+--------------------------------------------- 
+*/
+.no-hover:hover {
+    background-color: #eee; /* Elimina el cambio de color de fondo al hacer hover */
+}
+
+/* 
+---------------------------------------------
+RESUMEN TOTAL
+--------------------------------------------- 
+*/
+.card-grafics {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.card-statistics {
+    background: linear-gradient(85deg,rgb(199, 44, 49),rgba(192, 13, 19, 0.9));
+    color: #ffffff;
+    text-align: center;
+}
+
+.statistics-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    text-align: center;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.statistics-item {
+    flex: 1;
+    padding: 15px;
+    min-width: 150px;
+    position: relative;
+}
+
+.statistics-item h2 {
+    font-size: 22px;
+}
+
+.statistics-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 10%;
+    width: 1px;
+    height: 80%;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.venta {
+    color: green;
+}
+
+@media (max-width: 768px) {
+    .statistics-container {
+        flex-direction: column;
+        border: none;
+    }
+    
+    .statistics-item {
+        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .statistics-item:not(:last-child)::after {
+        display: none;
+    }
+
+    .btn {
+        width: 40%;
+        margin-top: 5px;
+        margin: auto;
+    }
+}
+
+.mayuscula {
+    text-transform: uppercase;
+}
+
+/* 
+---------------------------------------------
+IMAGEN CREAR PRODUCTO
+--------------------------------------------- 
+*/
+.vista-img img {
+    width: 200px;
+    height: 200px;
+    object-fit: fill;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #a4a4a4;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* 
+---------------------------------------------
+STOCK BAJO-ALTO
+--------------------------------------------- 
+*/
+.stock-bajo {
+    color: #c00d13c7 !important;
+    font-weight: bolder;
+}
+
+/* 
+---------------------------------------------
+Tabla de Resumen
+--------------------------------------------- 
+*/
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: inherit;
+    font-size: 14px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+.styled-table th, .styled-table td {
+    padding: 10px;
+    text-align: left;
+}
+.styled-table thead {
+    background-color: #ff060ab8;
+    color: #fff;
+    text-transform: uppercase;
+}
+.styled-table tbody tr:hover {
+    background-color: #ddd;
+}
+/* 
+---------------------------------------------
+BOTÓN
+--------------------------------------------- 
+*/
+.btn-confirmar {
+    width: 150px;
+}
+
+@media (max-width: 768px) {
+    .btn-confirmar {
+        width: 100px;
+        margin: 0;
+        justify-content: space-between;
+    }
+    .btn-cancelar {
+        width: 100px;
+    }
+}
