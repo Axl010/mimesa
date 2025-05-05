@@ -1,4 +1,5 @@
 <?php
+    session_start();
     $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
@@ -32,8 +33,8 @@
                 <ul class="navbar-nav bg-dark sidebar sidebar-dark accordion" id="accordionSidebar">
                     <!-- Sidebar - Brand -->
                     <div class="sidebar-brand d-flex align-items-center justify-content-center">
-                        <div class="sidebar-brand-text mx-3">
-                            <img src="../../img/logo.png" class="logo-sidebar" alt="Logo">
+                        <div class="sidebar-brand-text">
+                            <img src="../../img/logo-mimesa-ovalado.png" class="logo-sidebar" alt="Logo">
                         </div>
                     </div>
 
@@ -59,15 +60,23 @@
                             </i>
                         </a>
                         <div id="collapsePlatos" class="collapse <?php echo (in_array($current_page, 
-                        ['vista_productos.php', 'update_producto.php','create_producto.php', 
-                        'vista_movimientos.php', 'create_movimiento.php', 
-                        'vista_categorias.php','update_categoria.php','create_categoria.php',])) ? 'show' : ''; ?>" aria-labelledby="headingUtilities"
+                        ['vista_productos.php', 'editar_producto.php','crear_producto.php', 
+                        'vista_transferencias.php', 'crear_transferencia.php',])) ? 'show' : ''; ?>" aria-labelledby="headingUtilities"
                         data-parent="#accordionSidebar">
                             <div class="bg-white py-2 collapse-inner rounded">
                                 <a class="collapse-item" href="../../vistas/productos/vista_productos.php">Productos</a>
-                                <a class="collapse-item" href="../../vistas/movimientos/vista_movimientos.php">Transferencias</a>
+                                <a class="collapse-item" href="../../vistas/transferencias/vista_transferencias.php">Transferencias</a>
                             </div>
                         </div>
+                    </li>
+
+                    <hr class="sidebar-divider my-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../../vistas/clientes/vista_clientes.php">
+                            <i class="fa fa-user">
+                                <span class="ml-2">Clientes</span>
+                            </i>
+                        </a>
                     </li>
 
                     <hr class="sidebar-divider my-0">
@@ -104,7 +113,7 @@
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <img class="img-profile rounded-circle"
                                         src="<?= !empty($_SESSION['foto_usuario']) ? $_SESSION['foto_usuario'] : '../../photos/usuarios/default_user.png' ?>">
-                                        <span class="ml-2 d-none d-lg-inline text-danger font-weight-bold small mayuscula">USUARIO <i class="fa fa-angle-down ml-2"></i></span>
+                                        <span class="ml-2 d-none d-lg-inline text-usuario font-weight-bold small mayuscula"><?= $_SESSION['nombre']; ?><i class="fa fa-angle-down ml-2"></i></span>
                                     </a>
                                     <!-- Dropdown - User Information -->
                                     <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

@@ -58,7 +58,7 @@
                 </div><!--/.col -->
 
                 <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card mt-3">
+                    <div class="card">
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="estado" class="form-label bold">Estado</label>
@@ -70,7 +70,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse mt-4">
-                        <input type="submit" class="btn btn-primary btn-sm btn-danger" id="habilitar" name="edit_usuario" value="Guardar" tabindex="8" disabled>
+                        <input type="submit" class="btn btn-primary btn-sm btn-confirmar" id="habilitar" name="edit_usuario" value="Guardar" tabindex="8" disabled>
                         <a href="view_usuarios.php" role="button" class="btn btn-secondary btn-sm btn-reset mr-2" tabindex="9">Cancelar</a>
                     </div>
                 </div>

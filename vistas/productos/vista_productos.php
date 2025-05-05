@@ -11,9 +11,6 @@
                 <i class="fa fa-plus mr-2"></i>Agregar Producto
             </a>
         </div>
-        <!-- <div class="d-flex flex-column align-items-end mt-2">
-            <a href="../../vista_pedidos/pedidos/view_mesas.php" class="btn btn-success btn-sm mr-3 info" tabindex="1">Hacer Pedido</a>
-        </div> -->
     </section>
 
     <section class="content">
@@ -27,10 +24,12 @@
                                     <tr>
                                         <th class="text-left bg-thead"></th>
                                         <th class="text-left bg-thead">Título</th>
+                                        <th class="text-center bg-thead">SKU</th>
                                         <th class="text-center bg-thead">Estado</th>
                                         <th class="text-center bg-thead">Inventario</th>
+                                        <th class="text-center bg-thead">Peso (kg)</th>
                                         <th class="text-center bg-thead">Precio</th>
-                                        <th class="text-center bg-thead">Fecha de Creación</th>
+                                        <th class="text-center bg-thead">Fecha Creación</th>
                                     </tr>
                                 </thead>
                                 <script>document.querySelector('thead').classList.add('table-blue');</script>
@@ -54,14 +53,18 @@
                                         </td>
                                         <td style="vertical-align: middle;text-align:left;">
                                             <a href="editar_producto.php?id_producto=<?= $producto['id_producto']?>" class="enlace">
-                                                <?= $producto['producto'] ?>
+                                                <?= $producto['nombre'] ?>
                                             </a>
+                                        </td>
+                                        <td style="vertical-align: middle;text-align:center;">
+                                            <?= htmlspecialchars($producto['sku'] ?? '-') ?>
                                         </td>
                                         <td style="vertical-align: middle;">
                                             <!-- Mostrar estado en óvalo -->
                                             <span class="<?= $estadoClass ?> general"><?= $producto['estado'] ?></span>
                                         </td>
                                         <td style="vertical-align: middle;" class="<?= $estadoStock ?>"><?= $producto['stock'] . " en stock"?></td>
+                                        <td style="vertical-align: middle;"><?= number_format((float)$producto['peso'], 2, '.', '') ?? '0.00' ?> kg</td>
                                         <td style="vertical-align: middle;"><?= $producto['precio'] . " $" ?></td>
                                         <td style="vertical-align: middle;">
                                             <div><?= $fecha ?></div>

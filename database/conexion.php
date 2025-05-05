@@ -1,6 +1,6 @@
 <?php
     if (!defined('servidor')) define('servidor', 'localhost');
-    if (!defined('nombre_bd')) define('nombre_bd', 'pasantias');
+    if (!defined('nombre_bd')) define('nombre_bd', 'mimesa');
     if (!defined('usuario')) define('usuario', 'root');
     if (!defined('password')) define('password', base64_decode('QXhsMjg0MzM='));
 

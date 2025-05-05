@@ -1,9 +1,9 @@
         </div>
             <!-- Footer -->
             <footer class="sticky-footer bg-footer mt-4">
-                <div class="container my-auto">
+                <div class="container my-4">
                     <div class="copyright text-center my-auto">
-                        <img src="../../img/logo.png" alt="Logo" class="mx-auto" style="width:150px; padding:0; margin-top:8px">
+                        <span class="text-white font-weight-bold">Copyright © MIMESA ALIMENTOS C.A. RIF J-07032176-8</span>
                     </div>
                 </div>
             </footer>
@@ -20,16 +20,16 @@
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
+                <div class="modal-header bg-modal-logout text-white">
                     <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-sign-out"> Cerrar Sesion</i></h5>
-                    <button class="btn btn-danger" type="button" data-dismiss="modal">
+                    <button class="btn btn-modal-logout" type="button" data-dismiss="modal">
                         <i class="fa fa-times" aria-hidden="true"></i>
                     </button>
                 </div>
                 <div class="modal-body">Estas seguro de cerrar la sesión?</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                    <a class="btn btn-danger" href="../../controladores/logout.php">Cerrar Sesión</a>
+                    <a class="btn btn-modal-sesion" href="../../controladores/logout.php">Cerrar Sesión</a>
                 </div>
             </div>
         </div>
@@ -38,6 +38,10 @@
     <!-- Bootstrap core JavaScript-->
     <script src="../../plugins/jquery/jquery.min.js"></script>
     <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="../../plugins/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="../../js/sb-admin-2.js"></script>
     <!-- DataTable JS/Responsive -->
     <script src="../../plugins/datatable/jquery-3.5.1.js"></script>
     <script src="../../plugins/datatable/jquery.dataTables.min.js"></script>

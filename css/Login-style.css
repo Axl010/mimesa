@@ -76,9 +76,9 @@ button:hover {
 }
 
 .wrap-login img.logo {
-    width: 800px;
+    width: 100%;
     display: block;
-    margin: 10px auto;
+    margin: 0;
 }  
 
 /*----Formulario de user y password----*/
@@ -146,10 +146,10 @@ button:hover {
     -moz-transition: all 0.4s;
     transition: all 0.4s;
 
-    background: -webkit-linear-gradient(left, #f97d7d, #fc0709);
-    background: -o-linear-gradient(left, #f97d7d, #fc0709);
-    background: -moz-linear-gradient(left, #f97d7d, #fc0709);
-    background: linear-gradient(left, #f97d7d, #fc0709);
+    background: -webkit-linear-gradient(left, #0a963f, #193B6B);
+    background: -o-linear-gradient(left, #0a963f, #193B6B);
+    background: -moz-linear-gradient(left, #0a963f, #193B6B);
+    background: linear-gradient(left, #0a963f, #193B6B);
 }
 
 .focus-efecto::after {
@@ -208,6 +208,7 @@ button:hover {
     border-radius: 40px 5px;
     overflow: hidden;
     margin: 0 auto;
+    margin-top: 10px;
 }
 
 .login-form-bgbtn{
@@ -215,11 +216,11 @@ button:hover {
     z-index: -1;
     width: 300%;
     height: 100%;
-    background: #fc0709;
-    background: -webkit-linear-gradient(right, #ff6969, #fc0709, #ff6969, #fc0709);
-    background: -o-linear-gradient(right, #ff6969, #fc0709, #ff6969, #fc0709);
-    background: -moz-linear-gradient(right, #ff6969, #fc0709, #ff6969, #fc0709);
-    background: linear-gradient(right, #ff6969, #fc0709, #ff6969, #fc0709);
+    background: #193B6B;
+    background: -webkit-linear-gradient(right, #193B6B, #0a963f, #193B6B, #0a963f);
+    background: -o-linear-gradient(right, #193B6B, #0a963f, #193B6B, #0a963f);
+    background: -moz-linear-gradient(right, #193B6B, #0a963f, #193B6B, #0a963f);
+    background: linear-gradient(right, #193B6B, #0a963f, #193B6B, #0a963f);
     top: 0;
     left: -100%;
 

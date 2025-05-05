@@ -28,7 +28,7 @@
         <div class="container-login">
             <div class="wrap-login">
                 <form class="login-form validate-form" id="formlogin" method="POST">
-                    <img class="logo" src="img/logo-horizontal-sinfondo.png">
+                    <img class="logo" src="img/logo-mimesa.png">
                     <div class="wrap-input100" data-validate = "Usuario incorrecto">
                         <input class="input100" type="text" id="usuario" name="usuario" placeholder="Usuario" tabindex="1">
                         <span class="focus-efecto"></span>

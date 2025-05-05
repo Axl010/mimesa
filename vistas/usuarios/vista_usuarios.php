@@ -24,6 +24,7 @@
                             <thead class="table-primary">
                                 <tr>
                                     <th class="text-left bg-thead"></th>
+                                    <th class="text-left bg-thead">Nombre</th>
                                     <th class="text-left bg-thead">Usuario</th>
                                     <th class="text-center bg-thead">Estado</th>
                                     <th class="text-center bg-thead">Teléfono</th>
@@ -58,6 +59,7 @@
                                         <?= $usuario['nombre'] ?>
                                     </a>
                                 </td>
+                                <td style="vertical-align: middle;text-align:left;"><?= $usuario['usuario'] ?></td>
                                 <td style="vertical-align: middle;">
                                     <!-- Mostrar estado en óvalo -->
                                     <span class="<?= $estadoClass ?> general"><?= $usuario['estado'] ?></span>
