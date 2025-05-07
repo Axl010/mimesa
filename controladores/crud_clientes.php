@@ -78,6 +78,10 @@
         $stmt_crear->bindParam(':estado', $estado, PDO::PARAM_STR);
         $stmt_crear->bindParam(':notas', $notas, PDO::PARAM_STR);
         
+        // Registrar valores de diagnóstico
+        error_log("documento_tipo: " . $documento_tipo);
+        error_log("tipo_cliente: " . $tipo_cliente);
+        
         $resultado = $stmt_crear->execute();
         
         if($resultado) {
@@ -147,6 +151,10 @@
         $stmt_actualizar->bindParam(':estado', $estado, PDO::PARAM_STR);
         $stmt_actualizar->bindParam(':notas', $notas, PDO::PARAM_STR);
         $stmt_actualizar->bindParam(':id_cliente', $id_cliente, PDO::PARAM_INT);
+        
+        // Registrar valores de diagnóstico
+        error_log("documento_tipo: " . $documento_tipo);
+        error_log("tipo_cliente: " . $tipo_cliente);
         
         $resultado = $stmt_actualizar->execute();
         

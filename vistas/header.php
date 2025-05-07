@@ -1,5 +1,6 @@
 <?php
-    session_start();
+    // Incluir el verificador de sesión
+    include($_SERVER['DOCUMENT_ROOT'] . "/mimesa/controladores/verificar_sesion.php");
     $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
