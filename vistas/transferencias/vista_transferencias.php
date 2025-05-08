@@ -8,9 +8,14 @@
             <h2 class="h3 mb-0">
                 Transferencias
             </h2>
-            <a href="crear_transferencia.php" class="btn btn-dark btn-sm mr-3 info d-flex align-items-center justify-content-center" tabindex="1">
-                <i class="fa fa-plus mr-2"></i>Agregar Transferencia
-            </a>
+            <div class="d-flex">
+                <button id="btnImprimir" class="btn btn-info btn-sm mr-2 d-flex align-items-center justify-content-center" title="Imprimir Reporte">
+                    <i class="fas fa-print mr-2"></i>Imprimir
+                </button>
+                <a href="crear_transferencia.php" class="btn btn-dark btn-sm mr-3 info d-flex align-items-center justify-content-center" tabindex="1">
+                    <i class="fa fa-plus mr-2"></i>Agregar Transferencia
+                </a>
+            </div>
         </div>
 </section>
 
@@ -33,6 +38,7 @@
                                     <th class="text-center bg-thead">Estado</th>
                                     <th class="text-left bg-thead">Fecha Creación</th>
                                     <th class="text-left bg-thead">Fecha Despacho</th>
+                                    <th class="text-center bg-thead">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,6 +65,20 @@
                                 </td>
                                 <td><?= $fechaCreacion ?></td>
                                 <td><?= $fechaDespacho ?></td>
+                                <td class="text-center">
+                                    <?php if ($transferencia['estado'] === 'pendiente') { ?>
+                                        <button class="btn btn-success btn-sm aceptar-transferencia" data-id="<?= $transferencia['id_transferencia'] ?>" title="Aceptar Transferencia">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm cancelar-transferencia" data-id="<?= $transferencia['id_transferencia'] ?>" title="Cancelar Transferencia">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    <?php } elseif ($transferencia['estado'] === 'cancelada') { ?>
+                                        <button class="btn btn-warning btn-sm restaurar-transferencia" data-id="<?= $transferencia['id_transferencia'] ?>" title="Restaurar Transferencia">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    <?php } ?>
+                                </td>
                             </tr>
                             <?php } ?>
                             </tbody>
@@ -69,6 +89,27 @@
         </div>
     </div>
 </section>
+
+<!-- Modal para el reporte de impresión -->
+<div class="modal fade" id="modalImpresion" tabindex="-1" role="dialog" aria-labelledby="modalImpresionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalImpresionLabel">Reporte de Transferencia</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="contenidoImpresion">
+                <!-- El contenido se cargará dinámicamente -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btnImprimirReporte">Imprimir</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <style>
     .productos-row {
@@ -82,7 +123,8 @@
         margin-bottom: 0;
     }
     .productos-table th {
-        background-color: #e9ecef;
+        background-color:#01903E;
+        color: #f8f9fa;
     }
     .loading-spinner {
         display: flex;
@@ -96,8 +138,232 @@
         object-fit: cover;
         border-radius: 4px;
     }
+    .aceptar-transferencia, .cancelar-transferencia, .restaurar-transferencia {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.25rem 0.5rem;
+        width: 32px !important;
+        height: 32px;
+    }
+    .aceptar-transferencia i, .cancelar-transferencia i, .restaurar-transferencia i {
+        margin: 0;
+        font-size: 0.875rem;
+    }
+    
+    /* Estilos para la vista normal (modal) */
+    .reporte {
+        width: 100%;
+    }
+    .pagina {
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        background: #fff;
+    }
+    .pagina:last-child {
+        margin-bottom: 0;
+    }
+    .reporte-header {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .reporte-header h4 {
+        font-size: 16px;
+        margin: 0 0 3px 0;
+        font-weight: bold;
+    }
+    .reporte-header p {
+        font-size: 12px;
+        margin: 0;
+    }
+    .reporte-tabla {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+        font-size: 12px;
+    }
+    .reporte-tabla th, .reporte-tabla td {
+        border: 1px solid #ddd;
+        padding: 4px;
+        text-align: left;
+        white-space: normal;
+        word-wrap: break-word;
+        vertical-align: middle;
+    }
+    .reporte-tabla th {
+        background-color: #e9ecef;
+        color: #000;
+        font-weight: bold;
+    }
+    .tabla-vehiculo {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 12px;
+    }
+    .tabla-vehiculo th, .tabla-vehiculo td {
+        border: 1px solid #ddd;
+        padding: 4px;
+        text-align: left;
+    }
+    .tabla-vehiculo th {
+        background-color: #e9ecef;
+        color: #000;
+        font-weight: bold;
+    }
+
+    /* Estilos específicos para impresión */
+    @media print {
+        @page {
+            size: landscape;
+            margin: 0.8cm;
+        }
+        
+        body * {
+            visibility: hidden;
+        }
+        
+        #modalImpresion, #modalImpresion * {
+            visibility: visible;
+        }
+        
+        #modalImpresion {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        
+        .modal-dialog {
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        
+        .modal-content {
+            border: none !important;
+            box-shadow: none !important;
+            background: none !important;
+        }
+        
+        .modal-header,
+        .modal-footer,
+        .no-print {
+            display: none !important;
+        }
+        
+        .modal-body {
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            background: none !important;
+        }
+        
+        .reporte {
+            width: 100%;
+        }
+        
+        .pagina {
+            page-break-after: always;
+            page-break-before: always;
+            page-break-inside: avoid;
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .pagina:first-child {
+            page-break-before: avoid;
+        }
+        
+        .pagina:last-child {
+            page-break-after: avoid;
+        }
+        
+        .reporte-header {
+            margin-bottom: 10px;
+        }
+        
+        .pagina:nth-child(2) .reporte-header {
+            margin-top: 20px;
+        }
+        
+        .reporte-header h4 {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+        
+        .reporte-header p {
+            margin: 0;
+            font-size: 11px;
+        }
+        
+        .reporte-tabla {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
+            font-size: 11px;
+        }
+        
+        .reporte-tabla th,
+        .reporte-tabla td {
+            border: none;
+            padding: 3px;
+        }
+        
+        .reporte-tabla th {
+            background-color: #e9ecef !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        .tabla-vehiculo {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 80px;
+            font-size: 11px;
+        }
+        
+        .tabla-vehiculo th,
+        .tabla-vehiculo td {
+            border: none;
+            padding: 3px;
+        }
+        
+        .tabla-vehiculo th {
+            background-color: #e9ecef !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+    }
+    
+    /* Estilos para el modal de impresión */
+    #modalImpresion .modal-dialog {
+        max-width: 800px;
+        margin: 1.75rem auto;
+    }
+
+    #modalImpresion .modal-content {
+        min-height: auto;
+    }
+
+    #modalImpresion .modal-body {
+        padding: 10px;
+    }
+
+    #contenidoImpresion {
+        padding: 5px;
+    }
 </style>
 <script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../../js/notificaciones.js"></script>
 <script>
     $(document).ready(function() {
         // Función para obtener los productos de una transferencia
@@ -113,8 +379,27 @@
             });
         }
 
+        // Función para actualizar el estado de una transferencia
+        function actualizarEstadoTransferencia(id_transferencia, nuevoEstado) {
+            return $.ajax({
+                url: '../../controladores/crud_transferencias.php',
+                type: 'POST',
+                data: {
+                    action: 'actualizar_estado_transferencia',
+                    id_transferencia: id_transferencia,
+                    nuevo_estado: nuevoEstado
+                },
+                dataType: 'json'
+            });
+        }
+
         // Manejar el clic en la fila
-        $('#table tbody').on('click', 'tr', function() {
+        $('#table tbody').on('click', 'tr', function(e) {
+            // Si el clic fue en un botón de acción, no expandir la fila
+            if ($(e.target).closest('.aceptar-transferencia, .cancelar-transferencia').length) {
+                return;
+            }
+
             var tr = $(this);
             var id_transferencia = tr.data('id');
             var row = $('#table').DataTable().row(tr);
@@ -138,7 +423,7 @@
                         var productosHtml = '<table class="table table-sm productos-table">' +
                             '<thead><tr>' +
                             '<th>Foto</th>' +
-                            '<th>Producto</th>' +
+                            '<th>Descripción</th>' +
                             '<th class="text-center">Precio</th>' +
                             '<th class="text-center">Cantidad</th>' +
                             '<th class="text-center">Peso Unitario</th>' +
@@ -164,6 +449,282 @@
                         console.error('Error:', error);
                         row.child('<div class="alert alert-danger m-3">' + error.message + '</div>').show();
                     });
+            }
+        });
+
+        // Manejar clic en botón de aceptar transferencia
+        $('.aceptar-transferencia').on('click', function(e) {
+            e.stopPropagation();
+            var id_transferencia = $(this).data('id');
+            var button = $(this);
+            
+            confirmar('¿Estás seguro de aceptar esta transferencia?', 
+                function() {
+                    actualizarEstadoTransferencia(id_transferencia, 'completada')
+                        .then(function(response) {
+                            if (response.error) {
+                                throw new Error(response.mensaje);
+                            }
+                            location.reload();
+                        })
+                        .catch(function(error) {
+                            mostrarError('Error al actualizar el estado: ' + error.message);
+                        });
+                }
+            );
+        });
+
+        // Manejar clic en botón de cancelar transferencia
+        $('.cancelar-transferencia').on('click', function(e) {
+            e.stopPropagation();
+            var id_transferencia = $(this).data('id');
+            var button = $(this);
+            
+            confirmar('¿Estás seguro de cancelar esta transferencia?', 
+                function() {
+                    actualizarEstadoTransferencia(id_transferencia, 'cancelada')
+                        .then(function(response) {
+                            if (response.error) {
+                                throw new Error(response.mensaje);
+                            }
+                            location.reload();
+                        })
+                        .catch(function(error) {
+                            mostrarError('Error al actualizar el estado: ' + error.message);
+                        });
+                }
+            );
+        });
+
+        // Manejar clic en botón de restaurar transferencia
+        $(document).on('click', '.restaurar-transferencia', function(e) {
+            e.stopPropagation();
+            var id_transferencia = $(this).data('id');
+            var button = $(this);
+            
+            confirmar('¿Estás seguro de restaurar esta transferencia?', 
+                function() {
+                    actualizarEstadoTransferencia(id_transferencia, 'pendiente')
+                        .then(function(response) {
+                            if (response.error) {
+                                throw new Error(response.mensaje);
+                            }
+                            location.reload();
+                        })
+                        .catch(function(error) {
+                            mostrarError('Error al actualizar el estado: ' + error.message);
+                        });
+                }
+            );
+        });
+
+        // Función para cargar el reporte de impresión
+        function cargarReporteImpresion(id_transferencia) {
+            $.ajax({
+                url: '../../controladores/crud_transferencias.php',
+                type: 'POST',
+                data: {
+                    action: 'get_productos_transferencia',
+                    id_transferencia: id_transferencia
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.error) {
+                        mostrarError(response.mensaje);
+                        return;
+                    }
+
+                    // Obtener la información de la transferencia
+                    var tr = $('tr[data-id="' + id_transferencia + '"]');
+                    var rowData = [];
+                    tr.find('td').each(function(index) {
+                        rowData.push($(this).text().trim());
+                    });
+                    
+                    // Crear el contenido del reporte
+                    var contenido = `
+                        <div class="reporte">
+                            <div class="pagina">
+                                <div class="reporte-header">
+                                    <h4>REPORTE DE TRANSFERENCIA</h4>
+                                    <p>Fecha: ${new Date().toLocaleDateString()}</p>
+                                </div>
+                                
+                                <div style="margin-bottom: 20px;">
+                                    <table style="width: 200px; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="font-weight: bold; padding: 3px; background-color: #e9ecef !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">CARGA</td>
+                                            <td style="padding: 3px; background-color: #e9ecef !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">${id_transferencia}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <table class="reporte-tabla">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Cliente</th>
+                                            <th>Código SKU</th>
+                                            <th>Descripción</th>
+                                            <th>Zona Entrega</th>
+                                            <th>Cantidad</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                    `;
+
+                    // Agregar los productos
+                    response.forEach(function(producto) {
+                        contenido += `
+                            <tr>
+                                <td>${id_transferencia}</td>
+                                <td>${rowData[1]}</td>
+                                <td>${producto.codigo_sku || '-'}</td>
+                                <td>${producto.nombre}</td>
+                                <td>${rowData[3]}</td>
+                                <td>${producto.cantidad}</td>
+                            </tr>
+                        `;
+                    });
+
+                    contenido += `
+                                    </tbody>
+                                </table>
+
+                                <table class="tabla-vehiculo">
+                                    <thead>
+                                        <tr>
+                                            <th>SKU</th>
+                                            <th>Tipo de Vehículo</th>
+                                            <th>Origen</th>
+                                            <th>Destino</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>${response[0]?.codigo_sku || '-'}</td>
+                                            <td>${rowData[4]}</td>
+                                            <td>${rowData[2]}</td>
+                                            <td>${rowData[3]}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="pagina">
+                                <div class="reporte-header">
+                                    <h4>REPORTE DE CARGA</h4>
+                                    <p>Fecha: ${new Date().toLocaleDateString()}</p>
+                                </div>
+                                
+                                <div style="margin-bottom: 20px;">
+                                    <table style="width: 200px; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="font-weight: bold; padding: 3px; background-color: #e9ecef !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">CARGA</td>
+                                            <td style="padding: 3px; background-color: #e9ecef !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">${id_transferencia}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <table class="reporte-tabla">
+                                    <thead>
+                                        <tr>
+                                            <th>Código SKU</th>
+                                            <th>Descripción</th>
+                                            <th>Cantidad</th>
+                                            <th>Toneladas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                    `;
+
+                    // Agregar los productos
+                    response.forEach(function(producto) {
+                        contenido += `
+                            <tr>
+                                <td>${producto.codigo_sku || '-'}</td>
+                                <td>${producto.nombre}</td>
+                                <td>${producto.cantidad}</td>
+                                <td>${(producto.peso_total / 1000).toFixed(3)}</td>
+                            </tr>
+                        `;
+                    });
+
+                    contenido += `
+                                    </tbody>
+                                </table>
+
+                                <table class="tabla-vehiculo">
+                                    <thead>
+                                        <tr>
+                                            <th>SKU</th>
+                                            <th>Tipo de Vehículo</th>
+                                            <th>Origen</th>
+                                            <th>Destino</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>${response[0]?.codigo_sku || '-'}</td>
+                                            <td>${rowData[4]}</td>
+                                            <td>${rowData[2]}</td>
+                                            <td>${rowData[3]}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+
+                    $('#contenidoImpresion').html(contenido);
+                    var modal = new bootstrap.Modal(document.getElementById('modalImpresion'));
+                    modal.show();
+                },
+                error: function(xhr, status, error) {
+                    mostrarError('Error al cargar el reporte: ' + error);
+                }
+            });
+        }
+
+        // Manejar clic en el botón de imprimir
+        $('#btnImprimir').on('click', function() {
+            var selectedRow = $('tr.selected');
+            if (selectedRow.length === 0) {
+                mostrarAdvertencia('Por favor, seleccione una transferencia para imprimir');
+                return;
+            }
+            
+            // Verificar si la transferencia está cancelada
+            var estado = selectedRow.find('td:eq(7) span').text().toLowerCase();
+            if (estado === 'cancelada') {
+                mostrarError('No puedes imprimir una transferencia cancelada');
+                return;
+            }
+            
+            var id_transferencia = selectedRow.data('id');
+            cargarReporteImpresion(id_transferencia);
+        });
+
+        // Manejar clic en el botón de imprimir reporte
+        $('#btnImprimirReporte').on('click', function() {
+            // Asegurarse de que el contenido esté listo antes de imprimir
+            setTimeout(function() {
+                window.print();
+            }, 100);
+        });
+
+        // Agregar selección de fila
+        $('#table tbody').on('click', 'tr', function(e) {
+            // Si el clic fue en un botón de acción, no seleccionar la fila
+            if ($(e.target).closest('.aceptar-transferencia, .cancelar-transferencia').length) {
+                return;
+            }
+
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            } else {
+                $('#table tbody tr.selected').removeClass('selected');
+                $(this).addClass('selected');
             }
         });
     });

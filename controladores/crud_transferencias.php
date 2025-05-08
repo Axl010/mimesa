@@ -162,10 +162,16 @@
 
     // Obtener productos de una transferencia
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'get_productos_transferencia') {
+        header('Content-Type: application/json');
+        
         try {
+            if (!isset($_POST['id_transferencia']) || empty($_POST['id_transferencia'])) {
+                throw new Exception("Selecciona una transferencia");
+            }
+
             $id_transferencia = $_POST['id_transferencia'];
             
-            $query = "SELECT p.nombre, p.foto, p.precio, dt.cantidad, dt.peso_kg, (dt.peso_kg * dt.cantidad) as peso_total
+            $query = "SELECT p.nombre, p.foto, p.precio, p.sku, dt.cantidad, dt.peso_kg, (dt.peso_kg * dt.cantidad) as peso_total
                       FROM detalle_transferencia dt
                       INNER JOIN productos p ON dt.id_producto = p.id_producto
                       WHERE dt.id_transferencia = :id_transferencia";
@@ -187,19 +193,40 @@
                     'precio' => number_format($producto['precio'], 2),
                     'cantidad' => $producto['cantidad'],
                     'peso_unitario' => number_format($producto['peso_kg'], 3),
-                    'peso_total' => number_format($producto['peso_total'], 3)
+                    'peso_total' => number_format($producto['peso_total'], 3),
+                    'codigo_sku' => $producto['sku']
                 );
             }
             
-            header('Content-Type: application/json');
             echo json_encode($resultado);
             
         } catch (Exception $e) {
-            header('Content-Type: application/json');
             echo json_encode(array(
                 'error' => true,
                 'mensaje' => $e->getMessage()
             ));
+        }
+        exit;
+    }
+
+    // Actualizar estado de transferencia
+    if(isset($_POST['action']) && $_POST['action'] === 'actualizar_estado_transferencia') {
+        $id_transferencia = $_POST['id_transferencia'];
+        $nuevo_estado = $_POST['nuevo_estado'];
+        
+        try {
+            $sql = "UPDATE transferencias SET estado = :nuevo_estado WHERE id_transferencia = :id_transferencia";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':nuevo_estado', $nuevo_estado, PDO::PARAM_STR);
+            $stmt->bindParam(':id_transferencia', $id_transferencia, PDO::PARAM_INT);
+            
+            if($stmt->execute()) {
+                echo json_encode(['success' => true, 'mensaje' => 'Estado actualizado correctamente']);
+            } else {
+                echo json_encode(['error' => true, 'mensaje' => 'Error al actualizar el estado']);
+            }
+        } catch(PDOException $e) {
+            echo json_encode(['error' => true, 'mensaje' => 'Error en la base de datos: ' . $e->getMessage()]);
         }
         exit;
     }

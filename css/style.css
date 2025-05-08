@@ -113,17 +113,22 @@ OVALO DE ESTADOS
     font-weight: 500;
     align-content: center;
 }
-.estado-activo.general{
-    background-color:rgb(129, 214, 149); /* Verde para activo */
+
+.estado-activo.general {
+    background-color: rgb(129, 214, 149); /* Verde para activo/completada */
     color: rgb(33, 64, 40);
-}
-.estado-inactivo.general{
-    background-color:rgb(246, 149, 158); /* Rojo para inactivo */
-    color: rgb(85, 29, 34);
-}
-.estado-pendiente.pedidos {
     width: 98px;
-    background-color:rgb(248, 133, 56); /* Naranja para pendiente */
+}
+
+.estado-inactivo.general {
+    background-color: rgb(246, 149, 158); /* Rojo para inactivo/cancelada */
+    color: rgb(85, 29, 34);
+    width: 98px;
+}
+
+.estado-pendiente.general {
+    width: 98px;
+    background-color: rgb(248, 133, 56); /* Naranja para pendiente */
     color: rgb(72, 44, 0);
 }
 
