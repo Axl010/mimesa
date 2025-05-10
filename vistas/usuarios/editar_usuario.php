@@ -14,7 +14,7 @@
                         </a>
                         <div class="d-flex align-items-center">
                             <h2 class="h4 ml-1"><?= htmlspecialchars($usuario['nombre']) ?></h2>
-                            <span class="<?= $usuario['estado'] == 'activo' ? 'estado-activo' : 'estado-inactivo' ?> general text-center px-2 py-1 ml-2 align-middle">
+                            <span class="<?= $usuario['estado'] == 'activo' ? 'estado-activo' : 'estado-inactivo' ?> edicion text-center px-2 py-1 ml-2 align-middle">
                                 <?= htmlspecialchars($usuario['estado']) ?>
                             </span>
                         </div>

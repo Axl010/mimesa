@@ -115,9 +115,20 @@ OVALO DE ESTADOS
 }
 
 .estado-activo.general {
-    background-color: rgb(129, 214, 149); /* Verde para activo/completada */
+    background-color: rgb(129, 214, 149); /* Verde para activo */
     color: rgb(33, 64, 40);
     width: 98px;
+}
+
+.estado-activo.edicion {
+    background-color: rgb(129, 214, 149); /* Verde para activo */
+    color: rgb(33, 64, 40);
+    width: 80px;
+}
+.estado-inactivo.edicion {
+    background-color: rgb(246, 149, 158); /* Rojo para inactivo */
+    color: rgb(85, 29, 34);
+    width: 80px;
 }
 
 .estado-inactivo.general {

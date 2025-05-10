@@ -29,21 +29,25 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="producto" class="form-label">Título</label>
-                                    <input type="text" class="form-control form-control-sm alfaguion" name="producto" id="producto" tabindex="2" value="<?= htmlspecialchars($producto['nombre']) ?>" required/>
+                                    <input type="text" class="form-control form-control-sm alfaguion" name="nombre" id="producto" tabindex="2" value="<?= htmlspecialchars($producto['nombre']) ?>" required/>
                                 </div>
                                 <div class="form-group">
-                                    <label for="descripcion" class="form-label">Descripción</label>
-                                    <textarea class="form-control form-control-sm" name="descripcion" id="descripcion" tabindex="3" rows="3"><?= htmlspecialchars($producto['descripcion']) ?></textarea>
+                                    <label for="descripcion" class="form-label">Descripción *</label>
+                                    <textarea class="form-control form-control-sm" name="descripcion" id="descripcion" rows="3" tabindex="4"><?= htmlspecialchars($producto['descripcion']) ?></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="foto" class="form-label">Foto del Producto</label>
-                                    <input type="file" class="form-control form-control-sm-file rounded" name="foto" id="foto" accept="image/*" tabindex="4" onchange="previewImage(event)" />
+                                    <label for="peso" class="form-label">Peso (kg) *</label>
+                                    <input type="text" class="form-control form-control-sm decimal" name="peso" id="peso" value="<?= htmlspecialchars($producto['peso']) ?>" tabindex="5" placeholder="0.00" required/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="foto" class="form-label">Foto</label>
+                                    <input type="file" class="form-control form-control-sm" name="foto" id="foto" accept="image/*" tabindex="6">
                                 </div>
                                 <!-- Vista previa de la imagen -->
                                 <div class="form-group vista-img">
                                     <label class="form-label">Vista previa</label>
                                     <!-- Muestra la imagen de la base de datos o la predeterminada -->
-                                    <img id="imgPreview" class="mx-auto d-block border border-secondary text-center rounded" src="<?= !empty($producto['foto']) ? htmlspecialchars($producto['foto']) : '../../photos/default_producto.jpg' ?>" alt=" Selecciona una Imagen" />
+                                    <img id="imgPreview" class="mx-auto d-block border border-secondary text-center rounded" src="<?= !empty($producto['foto']) ? htmlspecialchars($producto['foto']) : '../../photos/productos/default_producto.jpg' ?>" alt="Selecciona una Imagen" />
                                 </div>
                                 <!-- <div class="form-group">
                                     <label for="id_categoria" class="form-label">Categoría</label>
@@ -57,12 +61,8 @@
                                     </select>
                                 </div> -->
                                 <div class="form-group">
-                                    <label for="precio" class="form-label">Precio</label>
-                                    <input type="text" class="form-control form-control-sm decimal" name="precio" id="precio" tabindex="5" value="<?= htmlspecialchars($producto['precio']) ?>" placeholder="$ 0.00" required/>
-                                </div>
-                                <div class="form-group">
-                                    <label for="stock" class="form-label">Stock</label>
-                                    <input type="text" class="form-control form-control-sm" name="stock" id="stock" value="<?= htmlspecialchars($producto['stock']) ?>" readonly/>
+                                    <label for="stock" class="form-label">Cantidad en Stock *</label>
+                                    <input type="number" class="form-control form-control-sm" name="stock" id="stock" value="<?= htmlspecialchars($producto['stock']) ?>" min="0" placeholder="0" required/>
                                 </div>
                             </div><!--/.card body -->
                         </div>
@@ -71,10 +71,6 @@
                     <div class="col-lg-3 col-md-4 col-sm-12">
                         <div class="card"> 
                             <div class="card-body">
-                                <div class="form-group">
-                                    <label for="peso" class="form-label">Peso (kg)</label>
-                                    <input type="number" step="0.01" class="form-control form-control-sm decimal" name="peso" id="peso" tabindex="6" value="<?= htmlspecialchars($producto['peso'] ?? '') ?>" placeholder="0.00"/>
-                                </div>
                                 <div class="form-group">
                                     <label for="estado" class="form-label">Estado</label>
                                     <select class="form-select form-select-sm" id="estado" name="estado" tabindex="7">
@@ -95,4 +91,17 @@
     </section><!-- /.content -->
     <script src="../../js/habilitar_boton.js"></script>
     <script src="../../js/validacion_inputs.js"></script>
+    <script>
+        // Vista previa de la imagen
+        document.getElementById('foto').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imgPreview').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 <?php include("../footer.php")?>

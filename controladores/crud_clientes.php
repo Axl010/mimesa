@@ -9,6 +9,10 @@
     $consulta_cliente->execute();
     $lista_clientes = $consulta_cliente->fetchAll(PDO::FETCH_ASSOC);
 
+    $clientes = $conexion->prepare("SELECT id_cliente, nombre, estado FROM clientes");
+    $clientes->execute();
+    $cliente = $clientes->fetch(PDO::FETCH_ASSOC);
+
     // Crear nuevo cliente
     if(isset($_POST['crear_cliente'])) {
         // Obtener datos del formulario

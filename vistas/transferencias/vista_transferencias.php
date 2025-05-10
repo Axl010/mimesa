@@ -28,7 +28,7 @@
                         <table id="table" class="table table-hover nowrap custom-table" cellspacing="0" style="width:100%">
                             <thead class="table-primary">
                                 <tr>
-                                    <th class="text-left bg-thead">ID</th>
+                                    <th class="text-left bg-thead">Carga</th>
                                     <th class="text-left bg-thead">Cliente</th>
                                     <th class="text-left bg-thead">Origen</th>
                                     <th class="text-left bg-thead">Destino</th>
@@ -213,7 +213,7 @@
         font-weight: bold;
     }
 
-    /* Estilos específicos para impresión */
+    /* Estilos para impresión */
     @media print {
         @page {
             size: landscape;
@@ -341,6 +341,12 @@
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
+
+        tr[style*="background-color"] {
+            background-color: #e9ecef !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
     }
     
     /* Estilos para el modal de impresión */
@@ -362,7 +368,7 @@
     }
 </style>
 <script src="../../plugins/jquery/jquery.min.js"></script>
-<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script> -->
 <script src="../../js/notificaciones.js"></script>
 <script>
     $(document).ready(function() {
@@ -395,8 +401,9 @@
 
         // Manejar el clic en la fila
         $('#table tbody').on('click', 'tr', function(e) {
-            // Si el clic fue en un botón de acción, no expandir la fila
-            if ($(e.target).closest('.aceptar-transferencia, .cancelar-transferencia').length) {
+            // Si el clic fue en un botón de acción o en el botón responsive, no expandir la fila
+            if ($(e.target).closest('.aceptar-transferencia, .cancelar-transferencia, .dtr-control, .dtr-data').length || 
+                $(e.target).hasClass('dtr-control')) {
                 return;
             }
 
@@ -424,18 +431,16 @@
                             '<thead><tr>' +
                             '<th>Foto</th>' +
                             '<th>Descripción</th>' +
-                            '<th class="text-center">Precio</th>' +
                             '<th class="text-center">Cantidad</th>' +
                             '<th class="text-center">Peso Unitario</th>' +
                             '<th class="text-center">Peso Total</th>' +
                             '</tr></thead><tbody>';
 
-                        response.forEach(function(producto) {
+                        response.productos.forEach(function(producto) {
                             var fotoUrl = producto.foto ? '../../uploads/productos/' + producto.foto : '../../assets/img/no-image.png';
                             productosHtml += '<tr>' +
                                 '<td class="text-center"><img src="' + fotoUrl + '" class="producto-foto" alt="' + producto.nombre + '"></td>' +
                                 '<td>' + producto.nombre + '</td>' +
-                                '<td class="text-center">' + producto.precio + '</td>' +
                                 '<td class="text-center">' + producto.cantidad + '</td>' +
                                 '<td class="text-center">' + producto.peso_unitario + ' kg</td>' +
                                 '<td class="text-center">' + producto.peso_total + ' kg</td>' +
@@ -536,11 +541,8 @@
 
                     // Obtener la información de la transferencia
                     var tr = $('tr[data-id="' + id_transferencia + '"]');
-                    var rowData = [];
-                    tr.find('td').each(function(index) {
-                        rowData.push($(this).text().trim());
-                    });
-                    
+                    var transferencia = response.info_transferencia;
+
                     // Crear el contenido del reporte
                     var contenido = `
                         <div class="reporte">
@@ -552,9 +554,9 @@
                                 
                                 <div style="margin-bottom: 20px;">
                                     <table style="width: 200px; border-collapse: collapse;">
-                                        <tr>
-                                            <td style="font-weight: bold; padding: 3px; background-color: #e9ecef !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">CARGA</td>
-                                            <td style="padding: 3px; background-color: #e9ecef !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">${id_transferencia}</td>
+                                        <tr style="background-color: #e9ecef !important;">
+                                            <td style="font-weight: bold; padding: 3px;">CARGA</td>
+                                            <td style="padding: 3px;">${id_transferencia}</td>
                                         </tr>
                                     </table>
                                 </div>
@@ -563,117 +565,144 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Cliente</th>
+                                            <th>Nombre Cliente</th>
                                             <th>Código SKU</th>
-                                            <th>Descripción</th>
-                                            <th>Zona Entrega</th>
-                                            <th>Cantidad</th>
+                                            <th>Descripción SKU</th>
+                                            <th>Zona de Entrega</th>
+                                            <th>Can Pedido</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                     `;
 
+                    // Variable para el total
+                    let totalCantidad = 0;
+
                     // Agregar los productos
-                    response.forEach(function(producto) {
+                    response.productos.forEach(function(producto) {
+                        totalCantidad += parseInt(producto.cantidad);
                         contenido += `
                             <tr>
                                 <td>${id_transferencia}</td>
-                                <td>${rowData[1]}</td>
+                                <td>${transferencia.nombre_cliente || '-'}</td>
                                 <td>${producto.codigo_sku || '-'}</td>
                                 <td>${producto.nombre}</td>
-                                <td>${rowData[3]}</td>
+                                <td>${transferencia.destino || '-'}</td>
                                 <td>${producto.cantidad}</td>
                             </tr>
                         `;
                     });
 
+                    // Agregar fila de total
                     contenido += `
-                                    </tbody>
-                                </table>
+                            <tr style="background-color: #e9ecef !important;">
+                                <td colspan="5" style="text-align: left; font-weight: bold;">Grand Total</td>
+                                <td style="font-weight: bold;">${totalCantidad}</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                                <table class="tabla-vehiculo">
-                                    <thead>
-                                        <tr>
-                                            <th>SKU</th>
-                                            <th>Tipo de Vehículo</th>
-                                            <th>Origen</th>
-                                            <th>Destino</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>${response[0]?.codigo_sku || '-'}</td>
-                                            <td>${rowData[4]}</td>
-                                            <td>${rowData[2]}</td>
-                                            <td>${rowData[3]}</td>
-                                        </tr>
-                                    </tbody>
+                    <table class="tabla-vehiculo">
+                        <thead>
+                            <tr>
+                                <th>TRANSPORTE</th>
+                                <th>CHOFER</th>
+                                <th>CEDULA</th>
+                                <th>PLACA</th>
+                                <th>TIPO</th>
+                                <th>VEHICULO</th>
+                                <th>LG</th>
+                                <th>OBSERV</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>TRANSPORTE</td>
+                                <td>${transferencia.nombre_conductor || '-'}</td>
+                                <td>${transferencia.cedula_conductor || '-'}</td>
+                                <td>${transferencia.placa_vehiculo || '-'}</td>
+                                <td>${transferencia.tipo_vehiculo || '-'}</td>
+                                <td>${transferencia.tipo_vehiculo || '-'}</td>
+                                <td>-</td>
+                                <td>${transferencia.observacion || '-'}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    `;
+
+                    contenido += `
+                        </div>
+                        <div class="pagina">
+                            <div class="reporte-header">
+                                <h4>REPORTE DE CARGA</h4>
+                                <p>Fecha: ${new Date().toLocaleDateString()}</p>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <table style="width: 200px; border-collapse: collapse;">
+                                    <tr style="background-color: #e9ecef;">
+                                        <td style="font-weight: bold; padding: 3px;">CARGA</td>
+                                        <td style="padding: 3px;">${id_transferencia}</td>
+                                    </tr>
                                 </table>
                             </div>
 
-                            <div class="pagina">
-                                <div class="reporte-header">
-                                    <h4>REPORTE DE CARGA</h4>
-                                    <p>Fecha: ${new Date().toLocaleDateString()}</p>
-                                </div>
-                                
-                                <div style="margin-bottom: 20px;">
-                                    <table style="width: 200px; border-collapse: collapse;">
-                                        <tr>
-                                            <td style="font-weight: bold; padding: 3px; background-color: #e9ecef !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">CARGA</td>
-                                            <td style="padding: 3px; background-color: #e9ecef !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;">${id_transferencia}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-
-                                <table class="reporte-tabla">
-                                    <thead>
-                                        <tr>
-                                            <th>Código SKU</th>
-                                            <th>Descripción</th>
-                                            <th>Cantidad</th>
-                                            <th>Toneladas</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                            <table class="reporte-tabla">
+                                <thead>
+                                    <tr>
+                                        <th>Código SKU</th>
+                                        <th>Descripción</th>
+                                        <th>Cantidad</th>
+                                        <th>Toneladas</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                     `;
 
                     // Agregar los productos
-                    response.forEach(function(producto) {
+                    response.productos.forEach(function(producto) {
                         contenido += `
                             <tr>
                                 <td>${producto.codigo_sku || '-'}</td>
                                 <td>${producto.nombre}</td>
                                 <td>${producto.cantidad}</td>
-                                <td>${(producto.peso_total / 1000).toFixed(3)}</td>
+                                <td>${(parseFloat(producto.peso_total.replace(',', '')) / 1000).toFixed(3)}</td>
                             </tr>
                         `;
                     });
 
                     contenido += `
-                                    </tbody>
-                                </table>
+                                </tbody>
+                            </table>
 
-                                <table class="tabla-vehiculo">
-                                    <thead>
-                                        <tr>
-                                            <th>SKU</th>
-                                            <th>Tipo de Vehículo</th>
-                                            <th>Origen</th>
-                                            <th>Destino</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>${response[0]?.codigo_sku || '-'}</td>
-                                            <td>${rowData[4]}</td>
-                                            <td>${rowData[2]}</td>
-                                            <td>${rowData[3]}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <table class="tabla-vehiculo">
+                                <thead>
+                                    <tr>
+                                        <th>TRANSPORTE</th>
+                                        <th>CHOFER</th>
+                                        <th>CEDULA</th>
+                                        <th>PLACA</th>
+                                        <th>TIPO</th>
+                                        <th>VEHICULO</th>
+                                        <th>LG</th>
+                                        <th>OBSERV</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>TRANSPORTE</td>
+                                        <td>${transferencia.nombre_conductor || '-'}</td>
+                                        <td>${transferencia.cedula_conductor || '-'}</td>
+                                        <td>${transferencia.placa_vehiculo || '-'}</td>
+                                        <td>${transferencia.tipo_vehiculo || '-'}</td>
+                                        <td>${transferencia.tipo_vehiculo || '-'}</td>
+                                        <td>-</td>
+                                        <td>${transferencia.observacion || '-'}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
+                    </div>
                     `;
 
                     $('#contenidoImpresion').html(contenido);
@@ -715,8 +744,9 @@
 
         // Agregar selección de fila
         $('#table tbody').on('click', 'tr', function(e) {
-            // Si el clic fue en un botón de acción, no seleccionar la fila
-            if ($(e.target).closest('.aceptar-transferencia, .cancelar-transferencia').length) {
+            // Si el clic fue en un botón de acción o en el botón responsive, no seleccionar la fila
+            if ($(e.target).closest('.aceptar-transferencia, .cancelar-transferencia, .dtr-control, .dtr-data').length || 
+                $(e.target).hasClass('dtr-control')) {
                 return;
             }
 

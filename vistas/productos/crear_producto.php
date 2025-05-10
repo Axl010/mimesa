@@ -24,24 +24,28 @@
                             </div>
                             <div class="form-group">
                                 <label for="producto" class="form-label">Título *</label>
-                                <input type="text" class="form-control form-control-sm alfaguion" name="producto" id="producto" tabindex="2" required/>
+                                <input type="text" class="form-control form-control-sm alfaguion" name="nombre" id="producto" tabindex="2" required/>
                             </div>
                             <div class="form-group">
-                                <label for="descripcion" class="form-label">Descripción</label>
-                                <textarea class="form-control form-control-sm" name="descripcion" id="descripcion" tabindex="3" rows="3"></textarea>
+                                <label for="descripcion" class="form-label">Descripción *</label>
+                                <textarea class="form-control form-control-sm" name="descripcion" id="descripcion" rows="3" tabindex="4"></textarea>
                             </div>
                             <div class="form-group">
-                                <label for="foto" class="form-label">Foto del Producto</label>
-                                <input type="file" class="form-control form-control-sm" name="foto" id="foto" accept="image/*" tabindex="4" onchange="previewImage(event)"/>
+                                <label for="peso" class="form-label">Peso (kg) *</label>
+                                <input type="text" class="form-control form-control-sm decimal" name="peso" id="peso" tabindex="5" placeholder="0.00" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="stock" class="form-label">Cantidad en Stock *</label>
+                                <input type="number" class="form-control form-control-sm" name="stock" id="stock" tabindex="6" min="0" placeholder="0" required/>
+                            </div>
+                            <div class="form-group">
+                                <label for="foto" class="form-label">Foto</label>
+                                <input type="file" class="form-control form-control-sm" name="foto" id="foto" accept="image/*" tabindex="7">
                             </div>
                             <!-- Vista previa de la imagen -->
                             <div class="form-group vista-img">
                                 <label class="form-label">Vista previa</label>
-                                <img id="imgPreview" class="mx-auto d-block text-center" src="" alt="Selecciona una Imagen"/>                                                              
-                            </div>
-                            <div class="form-group">
-                                <label for="precio" class="form-label">Precio *</label>
-                                <input type="text" class="form-control form-control-sm decimal" name="precio" id="precio" tabindex="5" placeholder="$ 0.00" required/>
+                                <img id="imgPreview" class="mx-auto d-block text-center" src="../../photos/default_producto.jpg" alt="Selecciona una Imagen"/>                                                              
                             </div>
                             <!-- <div class="form-group">
                                 <label for="id_categoria" class="form-label">Categoría</label>
@@ -60,12 +64,8 @@
                         <div class="card">
                             <div class="card-body">
                             <div class="form-group">
-                                <label for="peso" class="form-label">Peso (kg)</label>
-                                <input type="number" step="0.01" class="form-control form-control-sm decimal" name="peso" id="peso" tabindex="6" placeholder="0.00"/>
-                            </div>
-                            <div class="form-group">
                                 <label for="estado" class="form-label bold">Estado</label>
-                                <select class="form-select form-select-sm" id="estado" name="estado" tabindex="7">
+                                <select class="form-select form-select-sm" id="estado" name="estado" tabindex="8">
                                     <option value="activo" selected>Activo</option>
                                     <option value="inactivo">Inactivo</option>
                                 </select>
@@ -73,8 +73,8 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse mt-4">
-                        <input type="submit" class="btn btn-primary btn-sm btn-confirmar" id="habilitar" name="agregar_producto" value="Guardar" tabindex="7" disabled>
-                        <a href="view_productos.php" role="button" class="btn btn-secondary btn-sm btn-reset  mr-2" tabindex="8">Cancelar</a>
+                        <input type="submit" class="btn btn-primary btn-sm btn-confirmar" id="habilitar" name="agregar_producto" value="Guardar" tabindex="8" disabled>
+                        <a href="view_productos.php" role="button" class="btn btn-secondary btn-sm btn-reset  mr-2" tabindex="9">Cancelar</a>
                     </div>
                 </div>
             </div>
@@ -83,4 +83,17 @@
 </section><!-- /.content -->
 <script src="../../js/habilitar_boton.js"></script>
 <script src="../../js/validacion_inputs.js"></script> 
+<script>
+    // Vista previa de la imagen
+    document.getElementById('foto').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('imgPreview').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 <?php include("../footer.php")?>

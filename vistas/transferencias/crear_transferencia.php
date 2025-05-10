@@ -34,7 +34,6 @@
                                         <th>C</th>
                                         <th>Producto</th>
                                         <th>Peso</th>
-                                        <th>Sub</th>
                                         <th style="width: 50px;"></th>
                                     </tr>
                                 </thead>
@@ -61,6 +60,19 @@
                                     <option value="<?= $vehiculo['id_vehiculo']; ?>" 
                                         data-capacidad="<?= $vehiculo['capacidad_carga_kg']; ?>">
                                         <?= $vehiculo['tipo']; ?> (Cap: <?= $vehiculo['capacidad_carga_kg']; ?> kg)
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id_conductor" class="form-label">Conductor *</label>
+                            <select class="form-select form-select-sm buscador" name="id_conductor" data-placeholder="Selecciona un conductor" required>
+                                <option value="" disabled selected></option>
+                                <?php foreach ($lista_conductores as $conductor) { ?>
+                                    <option value="<?= $conductor['id_conductor']; ?>" 
+                                        data-cedula="<?= $conductor['cedula']; ?>">
+                                        <?= $conductor['nombre']; ?> (CI: <?= $conductor['cedula']; ?>)
                                     </option>
                                 <?php } ?>
                             </select>
@@ -100,11 +112,10 @@
                                 <?php foreach ($lista_productos as $producto) { ?>
                                     <option value="<?= $producto['id_producto']; ?>" 
                                     data-nombre="<?= $producto['nombre']; ?>" 
-                                    data-precio="<?= $producto['precio']; ?>"
                                     data-stock="<?= $producto['stock']?>"
                                     data-peso="<?= $producto['peso'] ?? 0 ?>"
                                     data-stock-original='<?= $producto['stock']?>'>
-                                        <?= $producto['nombre']; ?> - $<?= $producto['precio']; ?> (Stock: <?= $producto['stock']; ?>)
+                                        <?= $producto['nombre']; ?> (Stock: <?= $producto['stock']; ?>)
                                     </option>
                                 <?php } ?>
                             </select>
@@ -186,7 +197,6 @@
             const productoSelect = $("#id_producto");
             const idProducto = productoSelect.val();
             const nombreProducto = productoSelect.find("option:selected").data("nombre");
-            const precioProducto = productoSelect.find("option:selected").data("precio");
             const stockProducto = productoSelect.find("option:selected").data("stock");
             const pesoProducto = productoSelect.find("option:selected").data("peso") || 0;
             
@@ -208,9 +218,6 @@
                 return;
             }
             
-            // Calcular el subtotal
-            const subtotal = precioProducto * cantidad;
-            
             // Verificar si el producto ya fue agregado
             const productoExistente = productosAgregados.find(p => p.id === idProducto);
             
@@ -224,20 +231,16 @@
                 }
                 
                 productoExistente.cantidad = nuevaCantidad;
-                productoExistente.subtotal = precioProducto * nuevaCantidad;
                 
                 // Actualizar la fila en la tabla
                 $("#producto-" + idProducto + " .cantidad-valor").text(nuevaCantidad);
                 $("#producto-" + idProducto + " td:nth-child(3)").text((pesoProducto * nuevaCantidad).toFixed(2) + " kg");
-                $("#producto-" + idProducto + " td:nth-child(4)").text("$" + productoExistente.subtotal.toFixed(2));
             } else {
                 // Agregar el producto al array
                 productosAgregados.push({
                     id: idProducto,
                     nombre: nombreProducto,
-                    precio: precioProducto,
                     cantidad: cantidad,
-                    subtotal: subtotal,
                     peso: pesoProducto
                 });
                 
@@ -257,7 +260,6 @@
                         </td>
                         <td>${nombreProducto}</td>
                         <td>${(pesoProducto * cantidad).toFixed(2)} kg</td>
-                        <td>$${subtotal.toFixed(2)}</td>
                         <td>
                             <button type="button" class="btn btn-sm btn-danger eliminar-producto" data-id="${idProducto}">
                                 <i class="fas fa-trash"></i>
@@ -357,12 +359,10 @@
                 
                 // Aumentar cantidad
                 producto.cantidad = parseInt(producto.cantidad) + 1;
-                producto.subtotal = parseFloat(producto.precio) * parseFloat(producto.cantidad);
                 
                 // Actualizar la tabla
                 $("#producto-" + idProducto + " .cantidad-valor").text(producto.cantidad);
-                $("#producto-" + idProducto + " td:nth-child(3)").text((producto.peso * producto.cantidad).toFixed(2) + " kg");
-                $("#producto-" + idProducto + " td:nth-child(4)").text("$" + producto.subtotal.toFixed(2));
+                $("#producto-" + idProducto + " td:nth-child(3)").text((pesoProducto * producto.cantidad).toFixed(2) + " kg");
                 
                 // Actualizar peso total y campos ocultos
                 actualizarPesoTotal();
@@ -396,12 +396,10 @@
                 
                 // Disminuir cantidad
                 producto.cantidad = parseInt(producto.cantidad) - 1;
-                producto.subtotal = parseFloat(producto.precio) * parseFloat(producto.cantidad);
                 
                 // Actualizar la tabla
                 $("#producto-" + idProducto + " .cantidad-valor").text(producto.cantidad);
-                $("#producto-" + idProducto + " td:nth-child(3)").text((producto.peso * producto.cantidad).toFixed(2) + " kg");
-                $("#producto-" + idProducto + " td:nth-child(4)").text("$" + producto.subtotal.toFixed(2));
+                $("#producto-" + idProducto + " td:nth-child(3)").text((pesoProducto * producto.cantidad).toFixed(2) + " kg");
                 
                 // Actualizar peso total y campos ocultos
                 actualizarPesoTotal();

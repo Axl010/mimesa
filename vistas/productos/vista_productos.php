@@ -28,7 +28,6 @@
                                         <th class="text-center bg-thead">Estado</th>
                                         <th class="text-center bg-thead">Inventario</th>
                                         <th class="text-center bg-thead">Peso (kg)</th>
-                                        <th class="text-center bg-thead">Precio</th>
                                         <th class="text-center bg-thead">Fecha Creación</th>
                                     </tr>
                                 </thead>
@@ -37,7 +36,7 @@
                                     <?php 
                                     foreach ($lista_productos as $producto) {
                                         // Ruta de la imagen
-                                        $fotoUrl = !empty($producto['foto']) ? $producto['foto'] : '../../photos/default_producto.jpg'; // Foto predeterminada si no hay imagen
+                                        $fotoUrl = !empty($producto['foto']) ? $producto['foto'] : '../../photos/productos/default_producto.jpg'; // Foto predeterminada si no hay imagen
                                         // Separar fecha y hora
                                         $fechaCompleta = $producto['fecha_creacion'];
                                         $fecha = date('Y-m-d', strtotime($fechaCompleta));
@@ -65,7 +64,6 @@
                                         </td>
                                         <td style="vertical-align: middle;" class="<?= $estadoStock ?>"><?= $producto['stock'] . " en stock"?></td>
                                         <td style="vertical-align: middle;"><?= number_format((float)$producto['peso'], 2, '.', '') ?? '0.00' ?> kg</td>
-                                        <td style="vertical-align: middle;"><?= $producto['precio'] . " $" ?></td>
                                         <td style="vertical-align: middle;">
                                             <div><?= $fecha ?></div>
                                             <div style="font-size: 0.9em; color: #666;"><?= $hora ?></div>

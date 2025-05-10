@@ -24,15 +24,16 @@ DROP TABLE IF EXISTS `productos`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `productos` (
   `id_producto` int(11) NOT NULL AUTO_INCREMENT,
-  `producto` varchar(100) NOT NULL,
+  `sku` varchar(50) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
   `descripcion` text DEFAULT NULL,
-  `precio` decimal(10,2) NOT NULL,
   `foto` varchar(255) DEFAULT NULL,
-  `estado` varchar(20) NOT NULL,
-  `stock` int(11) DEFAULT 0,
+  `peso` decimal(10,2) DEFAULT 0.00,
+  `estado` enum('activo','inactivo') NOT NULL DEFAULT 'activo',
+  `stock` int(11) NOT NULL DEFAULT 0,
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id_producto`),
-  UNIQUE KEY `producto` (`producto`)
+  UNIQUE KEY `sku` (`sku`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

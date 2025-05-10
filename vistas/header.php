@@ -12,7 +12,7 @@
             <meta name="description" content="Aplicación web para la gestión de inventario y transferencias de productos.">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-            <title>PASANTIAS</title> 
+            <title>MIMESA</title> 
 
             <!-- Estilo de Plantilla -->
             <link rel="stylesheet" href="../../css/sb-admin-2.css">
@@ -70,7 +70,14 @@
                             </div>
                         </div>
                     </li>
-
+                    <hr class="sidebar-divider my-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../../vistas/conductores/vista_conductores.php">
+                            <i class="fa fa-user">
+                                <span class="ml-2">Conductores</span>
+                            </i>
+                        </a>
+                    </li>
                     <hr class="sidebar-divider my-0">
                     <li class="nav-item">
                         <a class="nav-link" href="../../vistas/clientes/vista_clientes.php">
@@ -79,7 +86,6 @@
                             </i>
                         </a>
                     </li>
-
                     <hr class="sidebar-divider my-0">
                     <li class="nav-item">
                         <a class="nav-link" href="../../vistas/usuarios/vista_usuarios.php">
@@ -88,7 +94,6 @@
                             </i>
                         </a>
                     </li>
-
                     <!-- Sidebar Toggler (Sidebar) -->
                     <div class="text-center d-none d-md-inline">
                         <button class="rounded-circle border-0" id="sidebarToggle"></button>

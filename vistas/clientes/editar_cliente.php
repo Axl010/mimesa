@@ -34,7 +34,12 @@
                         <a href="vista_clientes.php" class="button-back">
                             <i class="fas fa-arrow-left"></i>
                         </a>
-                        <h2 class="h4 ml-1">Editar Cliente</h2>
+                        <div class="d-flex align-items-center">
+                            <h2 class="h4 ml-1"><?= htmlspecialchars($cliente['nombre']) ?></h2>
+                            <span class="<?= $cliente['estado'] == 'activo' ? 'estado-activo' : 'estado-inactivo' ?> edicion text-center px-2 py-1 ml-2 align-middle">
+                                <?= htmlspecialchars($cliente['estado']) ?>
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-8 col-sm-12 mb-3">
