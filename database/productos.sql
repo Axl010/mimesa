@@ -31,6 +31,7 @@ CREATE TABLE `productos` (
   `peso` decimal(10,2) DEFAULT 0.00,
   `estado` enum('activo','inactivo') NOT NULL DEFAULT 'activo',
   `stock` int(11) NOT NULL DEFAULT 0,
+  `cantidad_por_paleta` int(11) NOT NULL DEFAULT 1,
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id_producto`),
   UNIQUE KEY `sku` (`sku`)

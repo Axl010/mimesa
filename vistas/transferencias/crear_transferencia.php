@@ -25,7 +25,8 @@
                                 <h5 class="mb-0">Productos</h5>
                                 <div class="peso-info">
                                     <span class="badge bg-mimosa-green fs-5 me-2 p-2">Peso total: <span id="pesoTotal" class="fw-bold">0</span> kg</span>
-                                    <span class="badge bg-warning fs-5 p-2">Capacidad: <span id="capacidadVehiculo" class="fw-bold">0</span> kg</span>
+                                    <span class="badge bg-warning fs-5 me-2 p-2">Capacidad: <span id="capacidadVehiculo" class="fw-bold">0</span> kg</span>
+                                    <span class="badge bg-info fs-5 p-2">Paletas: <span id="paletasTotales" class="fw-bold">0</span> / <span id="capacidadPaletas" class="fw-bold">0</span></span>
                                 </div>
                             </div>
                             <table class="table table-hover styled-table" cellspacing="0" style="width:100%">
@@ -58,7 +59,8 @@
                                 <option value="" disabled selected></option>
                                 <?php foreach ($lista_vehiculos as $vehiculo) { ?>
                                     <option value="<?= $vehiculo['id_vehiculo']; ?>" 
-                                        data-capacidad="<?= $vehiculo['capacidad_carga_kg']; ?>">
+                                        data-capacidad="<?= $vehiculo['capacidad_carga_kg']; ?>"
+                                        data-paletas="<?= $vehiculo['capacidad_paletas']; ?>">
                                         <?= $vehiculo['tipo']; ?> (Cap: <?= $vehiculo['capacidad_carga_kg']; ?> kg)
                                     </option>
                                 <?php } ?>
@@ -114,6 +116,7 @@
                                     data-nombre="<?= $producto['nombre']; ?>" 
                                     data-stock="<?= $producto['stock']?>"
                                     data-peso="<?= $producto['peso'] ?? 0 ?>"
+                                    data-cantidad-paleta="<?= $producto['cantidad_por_paleta'] ?? 1 ?>"
                                     data-stock-original='<?= $producto['stock']?>'>
                                         <?= $producto['nombre']; ?> (Stock: <?= $producto['stock']; ?>)
                                     </option>
@@ -147,6 +150,8 @@
         let productosAgregados = [];
         let pesoTotal = 0;
         let capacidadVehiculo = 0;
+        let capacidadPaletas = 0;
+        let paletasTotales = 0;
         
         // Manejar el cambio de vehículo seleccionado
         $("select[name='id_vehiculo']").change(function() {
@@ -155,15 +160,19 @@
                 const vehiculoOption = $(this).find("option:selected");
                 // Obtener la capacidad de carga del vehículo seleccionado desde data attribute
                 capacidadVehiculo = parseFloat(vehiculoOption.data("capacidad")) || 0;
+                capacidadPaletas = parseFloat(vehiculoOption.data("paletas")) || 0;
                 
                 // Actualizar los elementos de la UI
                 $("#capacidadVehiculo").text(capacidadVehiculo.toFixed(2));
+                $("#capacidadPaletas").text(capacidadPaletas);
                 
                 // Verificar si el peso total supera la capacidad
                 verificarCapacidad();
             } else {
                 capacidadVehiculo = 0;
+                capacidadPaletas = 0;
                 $("#capacidadVehiculo").text("0");
+                $("#capacidadPaletas").text("0");
             }
         });
         
@@ -178,16 +187,29 @@
             } else {
                 $("#pesoTotal").closest(".badge").removeClass("bg-danger").addClass("bg-mimosa-green");
             }
+
+            if (capacidadPaletas <= 0) {
+                $("#paletasTotales").closest(".badge").removeClass("bg-info").addClass("bg-danger");
+                mostrarAdvertencia("El vehículo seleccionado no tiene capacidad de paletas definida.");
+            } else if (paletasTotales > capacidadPaletas) {
+                $("#paletasTotales").closest(".badge").removeClass("bg-info").addClass("bg-danger");
+                mostrarAdvertencia("¡La cantidad de paletas supera la capacidad del vehículo!");
+            } else {
+                $("#paletasTotales").closest(".badge").removeClass("bg-danger").addClass("bg-info");
+            }
         }
         
-        // Función para actualizar el peso total
-        function actualizarPesoTotal() {
+        // Función para actualizar el peso total y paletas
+        function actualizarTotales() {
             pesoTotal = 0;
+            paletasTotales = 0;
             productosAgregados.forEach(producto => {
                 pesoTotal += parseFloat(producto.peso) * parseFloat(producto.cantidad);
+                paletasTotales += Math.ceil(parseFloat(producto.cantidad) / parseFloat(producto.cantidadPorPaleta));
             });
             
             $("#pesoTotal").text(pesoTotal.toFixed(2));
+            $("#paletasTotales").text(paletasTotales);
             verificarCapacidad();
         }
         
@@ -199,6 +221,7 @@
             const nombreProducto = productoSelect.find("option:selected").data("nombre");
             const stockProducto = productoSelect.find("option:selected").data("stock");
             const pesoProducto = productoSelect.find("option:selected").data("peso") || 0;
+            const cantidadPorPaleta = productoSelect.find("option:selected").data("cantidad-paleta") || 1;
             
             // Obtener la cantidad ingresada o usar 1 como valor por defecto
             let cantidad = $("input[name='cantidad']").val();
@@ -241,7 +264,8 @@
                     id: idProducto,
                     nombre: nombreProducto,
                     cantidad: cantidad,
-                    peso: pesoProducto
+                    peso: pesoProducto,
+                    cantidadPorPaleta: cantidadPorPaleta
                 });
                 
                 // Crear fila en la tabla
@@ -271,8 +295,8 @@
                 $("#tablaProductos").append(fila);
             }
             
-            // Actualizar el peso total
-            actualizarPesoTotal();
+            // Actualizar el peso total y paletas
+            actualizarTotales();
             
             // Limpiar los campos
             $("input[name='cantidad']").val("");
@@ -315,8 +339,8 @@
                 // Eliminar de la tabla
                 $("#producto-" + idEliminar).remove();
                 
-                // Actualizar el peso total
-                actualizarPesoTotal();
+                // Actualizar el peso total y paletas
+                actualizarTotales();
                 
                 // Actualizar campos ocultos
                 actualizarCamposOcultos();
@@ -365,7 +389,7 @@
                 $("#producto-" + idProducto + " td:nth-child(3)").text((pesoProducto * producto.cantidad).toFixed(2) + " kg");
                 
                 // Actualizar peso total y campos ocultos
-                actualizarPesoTotal();
+                actualizarTotales();
                 actualizarCamposOcultos();
             });
             
@@ -376,6 +400,15 @@
                 // Buscar el producto en el array
                 const producto = productosAgregados.find(p => p.id === idProducto.toString());
                 if (!producto) return;
+                
+                // Buscar peso del producto
+                let pesoProducto = 0;
+                $("#id_producto option").each(function() {
+                    if ($(this).val() === idProducto) {
+                        pesoProducto = parseFloat($(this).data("peso")) || 0;
+                        return false;
+                    }
+                });
                 
                 // Validar cantidad mínima
                 if (parseInt(producto.cantidad) <= 1) {
@@ -388,7 +421,7 @@
                         $("#producto-" + idProducto).remove();
                         
                         // Actualizar peso total y campos ocultos
-                        actualizarPesoTotal();
+                        actualizarTotales();
                         actualizarCamposOcultos();
                     });
                     return;
@@ -402,7 +435,7 @@
                 $("#producto-" + idProducto + " td:nth-child(3)").text((pesoProducto * producto.cantidad).toFixed(2) + " kg");
                 
                 // Actualizar peso total y campos ocultos
-                actualizarPesoTotal();
+                actualizarTotales();
                 actualizarCamposOcultos();
             });
         }

@@ -13,9 +13,9 @@
                                 <i class="fas fa-arrow-left"></i>
                             </a>
                             <div class="d-flex align-items-center">
-                                <h2 class="h4 mb-1 align-middle"><?= htmlspecialchars($producto['nombre']) ?></h2>
-                                <span class="<?= $producto['estado'] == 'activo' ? 'estado-activo' : 'estado-inactivo' ?> general text-center px-2 py-1 ml-2 align-middle">
-                                    <?= htmlspecialchars($producto['estado']) ?>
+                                <h2 class="h4 mb-1 align-middle"><?= htmlspecialchars($producto['nombre'] ?? '') ?></h2>
+                                <span class="<?= ($producto['estado'] ?? '') == 'activo' ? 'estado-activo' : 'estado-inactivo' ?> general text-center px-2 py-1 ml-2 align-middle">
+                                    <?= htmlspecialchars($producto['estado'] ?? '') ?>
                                 </span>
                             </div>
                         </div>
@@ -29,19 +29,27 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="producto" class="form-label">Título</label>
-                                    <input type="text" class="form-control form-control-sm alfaguion" name="nombre" id="producto" tabindex="2" value="<?= htmlspecialchars($producto['nombre']) ?>" required/>
+                                    <input type="text" class="form-control form-control-sm alfaguion" name="nombre" id="producto" tabindex="2" value="<?= htmlspecialchars($producto['nombre'] ?? '') ?>" required/>
                                 </div>
                                 <div class="form-group">
                                     <label for="descripcion" class="form-label">Descripción *</label>
-                                    <textarea class="form-control form-control-sm" name="descripcion" id="descripcion" rows="3" tabindex="4"><?= htmlspecialchars($producto['descripcion']) ?></textarea>
+                                    <textarea class="form-control form-control-sm" name="descripcion" id="descripcion" rows="3" tabindex="4"><?= htmlspecialchars($producto['descripcion'] ?? '') ?></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="peso" class="form-label">Peso (kg) *</label>
-                                    <input type="text" class="form-control form-control-sm decimal" name="peso" id="peso" value="<?= htmlspecialchars($producto['peso']) ?>" tabindex="5" placeholder="0.00" required/>
+                                    <label for="peso" class="form-label">Peso de Caja (kg) *</label>
+                                    <input type="text" class="form-control form-control-sm decimal" name="peso" id="peso" value="<?= htmlspecialchars($producto['peso'] ?? '0.00') ?>" tabindex="5" placeholder="0.00" required/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="stock" class="form-label">Cantidad en Stock *</label>
+                                    <input type="number" class="form-control form-control-sm" name="stock" id="stock" value="<?= htmlspecialchars($producto['stock'] ?? '0') ?>" tabindex="6" min="0" placeholder="0" required/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cantidad_por_paleta" class="form-label">Cantidad por Paleta *</label>
+                                    <input type="number" class="form-control form-control-sm" name="cantidad_por_paleta" id="cantidad_por_paleta" value="<?= htmlspecialchars($producto['cantidad_por_paleta']) ?>" tabindex="7" required/>
                                 </div>
                                 <div class="form-group">
                                     <label for="foto" class="form-label">Foto</label>
-                                    <input type="file" class="form-control form-control-sm" name="foto" id="foto" accept="image/*" tabindex="6">
+                                    <input type="file" class="form-control form-control-sm" name="foto" id="foto" accept="image/*" tabindex="8">
                                 </div>
                                 <!-- Vista previa de la imagen -->
                                 <div class="form-group vista-img">
@@ -60,10 +68,6 @@
                                         <?php }?>
                                     </select>
                                 </div> -->
-                                <div class="form-group">
-                                    <label for="stock" class="form-label">Cantidad en Stock *</label>
-                                    <input type="number" class="form-control form-control-sm" name="stock" id="stock" value="<?= htmlspecialchars($producto['stock']) ?>" min="0" placeholder="0" required/>
-                                </div>
                             </div><!--/.card body -->
                         </div>
                     </div>
@@ -73,16 +77,16 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="estado" class="form-label">Estado</label>
-                                    <select class="form-select form-select-sm" id="estado" name="estado" tabindex="7">
-                                        <option value="activo" <?= $producto['estado'] == 'activo' ? 'selected' : '' ?>>Activo</option>
-                                        <option value="inactivo" <?= $producto['estado'] == 'inactivo' ? 'selected' : '' ?>>Inactivo</option>
+                                    <select class="form-select form-select-sm" id="estado" name="estado" tabindex="9">
+                                        <option value="activo" <?= ($producto['estado'] ?? '') == 'activo' ? 'selected' : '' ?>>Activo</option>
+                                        <option value="inactivo" <?= ($producto['estado'] ?? '') == 'inactivo' ? 'selected' : '' ?>>Inactivo</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                         <div class="d-flex flex-row-reverse mt-4">
-                            <input type="submit" class="btn btn-primary btn-sm btn-confirmar" id="habilitar" name="editar_producto" value="guardar" tabindex="8" disabled>
-                            <a href="vista_productos.php" role="button" class="btn btn-secondary btn-sm btn-reset mr-2" tabindex="9">Cancelar</a>
+                            <input type="submit" class="btn btn-primary btn-sm btn-confirmar" id="habilitar" name="editar_producto" value="guardar" tabindex="10" disabled>
+                            <a href="vista_productos.php" role="button" class="btn btn-secondary btn-sm btn-reset mr-2" tabindex="11">Cancelar</a>
                         </div>
                     </div>
                 </div>

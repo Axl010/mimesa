@@ -5,7 +5,7 @@
 
     // Lista de Productos
     $consulta = $conexion->prepare("    
-        SELECT id_producto, sku, nombre, descripcion, foto, peso, estado, stock, fecha_creacion
+        SELECT id_producto, sku, nombre, descripcion, foto, peso, estado, stock, cantidad_por_paleta, fecha_creacion
         FROM productos
     ");
     $consulta->execute();
@@ -42,6 +42,7 @@
         $peso = $_POST['peso'];
         $estado = $_POST['estado'];
         $stock = $_POST['stock'];
+        $cantidad_por_paleta = $_POST['cantidad_por_paleta'];
         
         // Manejo de la foto
         if(isset($_FILES['foto']) && $_FILES['foto']['error'] == 0){
@@ -78,7 +79,8 @@
                 foto, 
                 peso, 
                 estado,
-                stock
+                stock,
+                cantidad_por_paleta
             ) VALUES (
                 :sku, 
                 :nombre, 
@@ -86,7 +88,8 @@
                 :foto, 
                 :peso, 
                 :estado,
-                :stock
+                :stock,
+                :cantidad_por_paleta
             )");
             
         $create->bindParam(':sku', $sku);
@@ -96,6 +99,7 @@
         $create->bindParam(':peso', $peso);
         $create->bindParam(':estado', $estado);
         $create->bindParam(':stock', $stock);
+        $create->bindParam(':cantidad_por_paleta', $cantidad_por_paleta);
 
         try {
             $create->execute();
@@ -113,7 +117,7 @@
 
         // Obtener datos del producto
         $consulta = $conexion->prepare("
-            SELECT id_producto, sku, nombre, descripcion, foto, peso, estado, stock
+            SELECT id_producto, sku, nombre, descripcion, foto, peso, estado, stock, cantidad_por_paleta
             FROM productos
             WHERE id_producto = :id_producto
         ");
@@ -136,6 +140,7 @@
         $peso = $_POST['peso'];
         $estado = $_POST['estado'];
         $stock = $_POST['stock'];
+        $cantidad_por_paleta = $_POST['cantidad_por_paleta'];
         $foto = $_FILES['foto'];
 
         $ruta_destino = $producto['foto'];
@@ -170,7 +175,8 @@
                     foto = :foto, 
                     peso = :peso, 
                     estado = :estado,
-                    stock = :stock
+                    stock = :stock,
+                    cantidad_por_paleta = :cantidad_por_paleta
                 WHERE id_producto = :id_producto
             ");
             $consulta->bindParam(":foto", $foto);
@@ -183,7 +189,8 @@
                     descripcion = :descripcion, 
                     peso = :peso, 
                     estado = :estado,
-                    stock = :stock
+                    stock = :stock,
+                    cantidad_por_paleta = :cantidad_por_paleta
                 WHERE id_producto = :id_producto
             ");
         }
@@ -194,6 +201,7 @@
         $consulta->bindParam(":peso", $peso);
         $consulta->bindParam(":estado", $estado);
         $consulta->bindParam(":stock", $stock);
+        $consulta->bindParam(":cantidad_por_paleta", $cantidad_por_paleta);
         $consulta->bindParam(":id_producto", $id_producto);
 
         try {

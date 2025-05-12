@@ -1,8 +1,9 @@
 <?php
-    // Verificar si el usuario ha iniciado sesión
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     
-    // Si no existe la sesión de usuario, redirigir al login
+    // Verificar si el usuario ha iniciado sesión
     if(!isset($_SESSION['id_usuario'])) {
         $mensaje = "Error: Debes iniciar sesión";
         

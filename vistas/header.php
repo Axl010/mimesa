@@ -109,7 +109,7 @@
                         <nav class="navbar navbar-expand navbar-light bg-navbar topbar mb-4 static-top shadow">
                             <!--Alternar barra lateral-->
                             <button id="sidebarToggleTop" class="btn btn-link d-md-none ml-0">
-                                <i class="fa fa-bars text-danger"></i>
+                                <i class="fa fa-bars text-primary"></i>
                             </button>
                             <!-- Topbar Navbar -->
                             <ul class="navbar-nav ml-auto">

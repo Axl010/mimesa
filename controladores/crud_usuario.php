@@ -1,5 +1,12 @@
 <?php
-    include_once("../../database/conexion.php");
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    
+    // Obtener la ruta absoluta del proyecto
+    $ruta_proyecto = $_SERVER['DOCUMENT_ROOT'] . '/mimesa';
+    include_once($ruta_proyecto . "/database/conexion.php");
+    
     $objeto = new Conexion();
     $conexion = $objeto->Conectar();
 
@@ -130,5 +137,48 @@
             header('Location: vista_usuarios.php?mensaje=' . urlencode($mensaje));
             exit();
         }
+    }
+
+    // Verificar contraseña del usuario
+    if(isset($_POST['action']) && $_POST['action'] === 'verificar_password') {
+        header('Content-Type: application/json');
+        
+        try {
+            // Verificar si la sesión está activa
+            if (!isset($_SESSION['id_usuario'])) {
+                error_log("Sesión no iniciada. ID de sesión: " . session_id());
+                error_log("Contenido de la sesión: " . print_r($_SESSION, true));
+                throw new Exception("Sesión no iniciada");
+            }
+
+            if (!isset($_POST['password']) || empty($_POST['password'])) {
+                throw new Exception("La contraseña es requerida");
+            }
+
+            $password = $_POST['password'];
+            $id_usuario = $_SESSION['id_usuario'];
+            
+            // Obtener la contraseña del usuario actual
+            $sql = "SELECT password FROM usuarios WHERE id_usuario = :id_usuario";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
+            $stmt->execute();
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$usuario) {
+                throw new Exception("Usuario no encontrado");
+            }
+            
+            // Verificar la contraseña usando password_verify como en el login
+            if (password_verify($password, $usuario['password'])) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'mensaje' => 'Contraseña incorrecta']);
+            }
+            
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'mensaje' => $e->getMessage()]);
+        }
+        exit;
     }
 ?>  

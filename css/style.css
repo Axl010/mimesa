@@ -75,11 +75,11 @@ COLORES
     background-color: #0a963f !important;
 }
 .btn-modal-sesion {
-    background-color: #0a963f !important;
+    background-color: #193B6B !important;
     color: #fffffff4 !important;
 }
 .btn-modal-sesion:hover {
-    background-color: #0c612ddd !important;
+    background-color: #122b4e !important;
 }
 .btn-confirmar {
     background-color: #4b962a !important;
@@ -294,10 +294,10 @@ sidebarToggle (Boton menu mobile)
 */
 #sidebarToggleTop:focus, 
 #sidebarToggleTop:active {
-    outline: 2px solid #DC3545; /* Contorno rojo */
-    box-shadow: 0 0 2px #DC3545; /* Resplandor rojo */
+    outline: 2px solid #2f65b1; /* Contorno rojo */
+    box-shadow: 0 0 2px #2f65b1; /* Resplandor rojo */
     background-color: #212529; /* Fondo oscuro */
-    color: white; /* Color del icono */
+    color: #fff; /* Color del icono */
 }
 body.sidebar-toggled #sidebarToggleTop {
     background-color: #212529 !important; 

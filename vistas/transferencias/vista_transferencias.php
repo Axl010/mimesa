@@ -35,6 +35,7 @@
                                     <th class="text-left bg-thead">Vehículo</th>
                                     <th class="text-center bg-thead">Cant. Productos</th>
                                     <th class="text-center bg-thead">Peso Total</th>
+                                    <th class="text-center bg-thead">Total Paletas</th>
                                     <th class="text-center bg-thead">Estado</th>
                                     <th class="text-left bg-thead">Fecha Creación</th>
                                     <th class="text-left bg-thead">Fecha Despacho</th>
@@ -60,6 +61,7 @@
                                 <td><?= htmlspecialchars($transferencia['tipo_vehiculo']) ?></td>
                                 <td class="text-center"><?= $transferencia['cantidad_productos'] ?></td>
                                 <td class="text-center"><?= number_format($transferencia['peso_total'], 2) ?> kg</td>
+                                <td class="text-center"><?= number_format($transferencia['total_paletas'], 2) ?></td>
                                 <td class="text-center">
                                     <span class="<?= $estadoClass ?> general"><?= ucfirst($transferencia['estado']) ?></span>
                                 </td>
@@ -217,7 +219,7 @@
     @media print {
         @page {
             size: landscape;
-            margin: 0.8cm;
+            margin: 0.5cm;
         }
         
         body * {
@@ -235,6 +237,7 @@
             width: 100%;
             border: none !important;
             box-shadow: none !important;
+            overflow: visible !important;
         }
         
         .modal-dialog {
@@ -243,12 +246,14 @@
             padding: 0 !important;
             border: none !important;
             box-shadow: none !important;
+            overflow: visible !important;
         }
         
         .modal-content {
             border: none !important;
             box-shadow: none !important;
             background: none !important;
+            overflow: visible !important;
         }
         
         .modal-header,
@@ -262,10 +267,12 @@
             border: none !important;
             box-shadow: none !important;
             background: none !important;
+            overflow: visible !important;
         }
         
         .reporte {
             width: 100%;
+            overflow: visible !important;
         }
         
         .pagina {
@@ -275,6 +282,8 @@
             border: none;
             margin: 0;
             padding: 0;
+            overflow: visible !important;
+            height: auto !important;
         }
         
         .pagina:first-child {
@@ -347,6 +356,16 @@
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
+
+        /* Eliminar scrollbar */
+        ::-webkit-scrollbar {
+            display: none !important;
+        }
+        
+        * {
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+        }
     }
     
     /* Estilos para el modal de impresión */
@@ -402,7 +421,7 @@
         // Manejar el clic en la fila
         $('#table tbody').on('click', 'tr', function(e) {
             // Si el clic fue en un botón de acción o en el botón responsive, no expandir la fila
-            if ($(e.target).closest('.aceptar-transferencia, .cancelar-transferencia, .dtr-control, .dtr-data').length || 
+            if ($(e.target).closest('.aceptar-transferencia, .cancelar-transferencia, .restaurar-transferencia, .dtr-control, .dtr-data').length || 
                 $(e.target).hasClass('dtr-control')) {
                 return;
             }
@@ -432,21 +451,26 @@
                             '<th>Foto</th>' +
                             '<th>Descripción</th>' +
                             '<th class="text-center">Cantidad</th>' +
-                            '<th class="text-center">Peso Unitario</th>' +
+                            '<th class="text-center">Peso Caja</th>' +
                             '<th class="text-center">Peso Total</th>' +
+                            '<th class="text-center">Paletas</th>' +
                             '</tr></thead><tbody>';
 
                         response.productos.forEach(function(producto) {
-                            var fotoUrl = producto.foto ? '../../uploads/productos/' + producto.foto : '../../assets/img/no-image.png';
+                            var fotoUrl = producto.foto ? '../../uploads/productos/' + producto.foto : '../../photos/productos/default_producto.jpg';
+                            var pesoUnitario = parseFloat(producto.peso_unitario);
+                            var pesoTotal = pesoUnitario * parseInt(producto.cantidad);
+                            
                             productosHtml += '<tr>' +
                                 '<td class="text-center"><img src="' + fotoUrl + '" class="producto-foto" alt="' + producto.nombre + '"></td>' +
                                 '<td>' + producto.nombre + '</td>' +
                                 '<td class="text-center">' + producto.cantidad + '</td>' +
-                                '<td class="text-center">' + producto.peso_unitario + ' kg</td>' +
-                                '<td class="text-center">' + producto.peso_total + ' kg</td>' +
+                                '<td class="text-center">' + pesoUnitario.toFixed(2) + ' kg</td>' +
+                                '<td class="text-center">' + pesoTotal.toFixed(2) + ' kg</td>' +
+                                '<td class="text-center">' + producto.paletas + '</td>' +
                                 '</tr>';
                         });
-
+                        
                         productosHtml += '</tbody></table>';
                         row.child(productosHtml).show();
                     })
@@ -651,56 +675,92 @@
                                 <thead>
                                     <tr>
                                         <th>Código SKU</th>
-                                        <th>Descripción</th>
-                                        <th>Cantidad</th>
+                                        <th>Descripción SKU</th>
+                                        <th>Cant. Pedido</th>
+                                        <th>Paletas Completas</th>
+                                        <th>Parciales</th>
+                                        <th>Total Paletas</th>
                                         <th>Toneladas</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                     `;
 
+                    // Variables para los totales de la segunda hoja
+                    let totalCantidadSegunda = 0;
+                    let totalPaletasCompletas = 0;
+                    let totalParciales = 0;
+                    let totalPaletas = 0;
+                    let totalToneladas = 0;
+
                     // Agregar los productos
                     response.productos.forEach(function(producto) {
+                        var paletasCompletas = Math.floor(producto.cantidad / producto.cantidad_por_paleta);
+                        var parciales = (producto.cantidad % producto.cantidad_por_paleta) / producto.cantidad_por_paleta;
+                        var totalPaletasProducto = paletasCompletas + parciales;
+                        var toneladas = parseFloat(producto.peso_total.replace(',', '')) / 1000;
+                        
+                        totalCantidadSegunda += parseInt(producto.cantidad);
+                        totalPaletasCompletas += paletasCompletas;
+                        totalParciales += parciales;
+                        totalPaletas += totalPaletasProducto;
+                        totalToneladas += toneladas;
+                        
                         contenido += `
                             <tr>
                                 <td>${producto.codigo_sku || '-'}</td>
                                 <td>${producto.nombre}</td>
                                 <td>${producto.cantidad}</td>
-                                <td>${(parseFloat(producto.peso_total.replace(',', '')) / 1000).toFixed(3)}</td>
+                                <td>${paletasCompletas}</td>
+                                <td>${parciales.toFixed(2)}</td>
+                                <td>${totalPaletasProducto.toFixed(2)}</td>
+                                <td>${toneladas.toFixed(3)}</td>
                             </tr>
                         `;
                     });
 
+                    // Agregar fila de totales
                     contenido += `
-                                </tbody>
-                            </table>
+                            <tr style="background-color: #e9ecef !important;">
+                                <td colspan="2" style="text-align: left; font-weight: bold;">Grand Total</td>
+                                <td style="font-weight: bold;">${totalCantidadSegunda}</td>
+                                <td style="font-weight: bold;">${totalPaletasCompletas}</td>
+                                <td style="font-weight: bold;">${totalParciales.toFixed(2)}</td>
+                                <td style="font-weight: bold;">${totalPaletas.toFixed(2)}</td>
+                                <td style="font-weight: bold;">${totalToneladas.toFixed(3)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                            <table class="tabla-vehiculo">
-                                <thead>
-                                    <tr>
-                                        <th>TRANSPORTE</th>
-                                        <th>CHOFER</th>
-                                        <th>CEDULA</th>
-                                        <th>PLACA</th>
-                                        <th>TIPO</th>
-                                        <th>VEHICULO</th>
-                                        <th>LG</th>
-                                        <th>OBSERV</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>TRANSPORTE</td>
-                                        <td>${transferencia.nombre_conductor || '-'}</td>
-                                        <td>${transferencia.cedula_conductor || '-'}</td>
-                                        <td>${transferencia.placa_vehiculo || '-'}</td>
-                                        <td>${transferencia.tipo_vehiculo || '-'}</td>
-                                        <td>${transferencia.tipo_vehiculo || '-'}</td>
-                                        <td>-</td>
-                                        <td>${transferencia.observacion || '-'}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <table class="tabla-vehiculo">
+                        <thead>
+                            <tr>
+                                <th>TRANSPORTE</th>
+                                <th>CHOFER</th>
+                                <th>CEDULA</th>
+                                <th>PLACA</th>
+                                <th>TIPO</th>
+                                <th>VEHICULO</th>
+                                <th>LG</th>
+                                <th>OBSERV</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>TRANSPORTE</td>
+                                <td>${transferencia.nombre_conductor || '-'}</td>
+                                <td>${transferencia.cedula_conductor || '-'}</td>
+                                <td>${transferencia.placa_vehiculo || '-'}</td>
+                                <td>${transferencia.tipo_vehiculo || '-'}</td>
+                                <td>${transferencia.tipo_vehiculo || '-'}</td>
+                                <td>-</td>
+                                <td>${transferencia.observacion || '-'}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    `;
+
+                    contenido += `
                         </div>
                     </div>
                     `;
@@ -745,7 +805,7 @@
         // Agregar selección de fila
         $('#table tbody').on('click', 'tr', function(e) {
             // Si el clic fue en un botón de acción o en el botón responsive, no seleccionar la fila
-            if ($(e.target).closest('.aceptar-transferencia, .cancelar-transferencia, .dtr-control, .dtr-data').length || 
+            if ($(e.target).closest('.aceptar-transferencia, .cancelar-transferencia, .restaurar-transferencia, .dtr-control, .dtr-data').length || 
                 $(e.target).hasClass('dtr-control')) {
                 return;
             }

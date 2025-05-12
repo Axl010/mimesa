@@ -4,7 +4,7 @@
     $conexion = $objeto->Conectar();
 
     // Lista de Productos
-    $productos = $conexion->prepare("SELECT id_producto, nombre, stock, peso FROM productos WHERE estado = 'activo' AND stock > 0");
+    $productos = $conexion->prepare("SELECT id_producto, nombre, stock, peso, cantidad_por_paleta FROM productos WHERE estado = 'activo' AND stock > 0");
     $productos->execute();
     $lista_productos = $productos->fetchAll(PDO::FETCH_ASSOC);
 
@@ -32,12 +32,14 @@
             con.nombre as nombre_conductor, 
             con.cedula as cedula_conductor,
             COALESCE(SUM(dt.peso_kg), 0) as peso_total,
-            COUNT(dt.id_detalle) as cantidad_productos
+            COUNT(dt.id_detalle) as cantidad_productos,
+            COALESCE(SUM(dt.cantidad / p.cantidad_por_paleta), 0) as total_paletas
             FROM transferencias t 
             LEFT JOIN clientes c ON t.id_cliente = c.id_cliente 
             LEFT JOIN vehiculos v ON t.id_vehiculo = v.id_vehiculo 
             LEFT JOIN conductores con ON t.id_conductor = con.id_conductor
             LEFT JOIN detalle_transferencia dt ON t.id_transferencia = dt.id_transferencia
+            LEFT JOIN productos p ON dt.id_producto = p.id_producto
             GROUP BY t.id_transferencia, t.fecha_despacho, t.id_vehiculo, t.id_conductor, 
                      t.id_responsable, t.origen, t.id_cliente, t.direccion_destino, 
                      t.observacion, t.estado, t.fecha_creacion,
@@ -107,14 +109,29 @@
             
             // Recorrer y guardar cada producto
             $peso_total = 0;
+            $paletas_totales = 0;
+
+            // Obtener la capacidad de paletas del vehículo
+            $sql_vehiculo = "SELECT capacidad_paletas FROM vehiculos WHERE id_vehiculo = :id_vehiculo";
+            $stmt_vehiculo = $conexion->prepare($sql_vehiculo);
+            $stmt_vehiculo->bindParam(':id_vehiculo', $id_vehiculo, PDO::PARAM_INT);
+            $stmt_vehiculo->execute();
+            $vehiculo_info = $stmt_vehiculo->fetch(PDO::FETCH_ASSOC);
+            
+            if(!$vehiculo_info) {
+                throw new Exception("Vehículo no encontrado");
+            }
+            
+            $capacidad_paletas = $vehiculo_info['capacidad_paletas'];
+
             foreach($_POST['productos'] as $producto) {
                 $id_producto = $producto['id'];
                 $cantidad = $producto['cantidad'];
                 $peso = $producto['peso'] * $cantidad;
                 $peso_total += $peso;
                 
-                // Obtener stock del producto
-                $sql_get_producto = "SELECT stock FROM productos WHERE id_producto = :id_producto";
+                // Obtener información del producto
+                $sql_get_producto = "SELECT stock, cantidad_por_paleta FROM productos WHERE id_producto = :id_producto";
                 $stmt_get_producto = $conexion->prepare($sql_get_producto);
                 $stmt_get_producto->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
                 $stmt_get_producto->execute();
@@ -125,11 +142,28 @@
                 }
                 
                 $stock_actual = $producto_info['stock'];
+                $cantidad_por_paleta = $producto_info['cantidad_por_paleta'];
+                
+                // Calcular cantidad de paletas
+                $paletas = ceil($cantidad / $cantidad_por_paleta);
+                $paletas_totales += $paletas;
                 
                 // Verificar stock
                 if($cantidad > $stock_actual) {
                     throw new Exception("Stock insuficiente para el producto ID ".$id_producto);
                 }
+            }
+
+            // Verificar capacidad de paletas del vehículo después de procesar todos los productos
+            if($paletas_totales > $capacidad_paletas) {
+                throw new Exception("La cantidad de paletas (".$paletas_totales.") supera la capacidad del vehículo (".$capacidad_paletas.")");
+            }
+
+            // Si todo está bien, proceder a guardar los detalles
+            foreach($_POST['productos'] as $producto) {
+                $id_producto = $producto['id'];
+                $cantidad = $producto['cantidad'];
+                $peso = $producto['peso'] * $cantidad;
                 
                 // Guardar detalle de la transferencia
                 $sql_detalle = "INSERT INTO detalle_transferencia (
@@ -152,10 +186,9 @@
                 $stmt_detalle->execute();
                 
                 // Actualizar stock
-                $nuevo_stock = $stock_actual - $cantidad;
-                $sql_update_stock = "UPDATE productos SET stock = :nuevo_stock WHERE id_producto = :id_producto";
+                $sql_update_stock = "UPDATE productos SET stock = stock - :cantidad WHERE id_producto = :id_producto";
                 $stmt_update_stock = $conexion->prepare($sql_update_stock);
-                $stmt_update_stock->bindParam(':nuevo_stock', $nuevo_stock, PDO::PARAM_INT);
+                $stmt_update_stock->bindParam(':cantidad', $cantidad, PDO::PARAM_INT);
                 $stmt_update_stock->bindParam(':id_producto', $id_producto, PDO::PARAM_INT);
                 $stmt_update_stock->execute();
             }
@@ -208,7 +241,7 @@
             $info_transferencia = $stmt_transferencia->fetch(PDO::FETCH_ASSOC);
             
             // Luego obtener los productos
-            $query = "SELECT p.nombre, p.foto, p.sku, dt.cantidad, dt.peso_kg, (dt.peso_kg * dt.cantidad) as peso_total
+            $query = "SELECT p.nombre, p.foto, p.sku, p.peso as peso_caja, p.cantidad_por_paleta, dt.cantidad, dt.peso_kg
                       FROM detalle_transferencia dt
                       INNER JOIN productos p ON dt.id_producto = p.id_producto
                       WHERE dt.id_transferencia = :id_transferencia";
@@ -228,13 +261,16 @@
             );
             
             foreach ($productos as $producto) {
+                $paletas = ceil($producto['cantidad'] / $producto['cantidad_por_paleta']);
                 $resultado['productos'][] = array(
                     'nombre' => $producto['nombre'],
                     'foto' => $producto['foto'],
                     'cantidad' => $producto['cantidad'],
-                    'peso_unitario' => number_format($producto['peso_kg'], 3),
-                    'peso_total' => number_format($producto['peso_total'], 3),
-                    'codigo_sku' => $producto['sku']
+                    'peso_unitario' => number_format($producto['peso_caja'], 2),
+                    'peso_total' => number_format($producto['peso_caja'] * $producto['cantidad'], 2),
+                    'codigo_sku' => $producto['sku'],
+                    'cantidad_por_paleta' => $producto['cantidad_por_paleta'],
+                    'paletas' => $paletas
                 );
             }
             

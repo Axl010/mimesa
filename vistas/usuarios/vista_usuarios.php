@@ -2,7 +2,6 @@
     include("../../controladores/crud_usuario.php");
     include("../header.php");
 ?>
-
 <section class="content-header mb-3">
         <div class="d-flex flex-wrap justify-content-between align-items-center ml-3 mb-3">
             <h2 class="h3 mb-0">
@@ -55,7 +54,7 @@
                                     <img src="<?= $fotoUrl ?>" alt="Foto del usuario" class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
                                 </td>
                                 <td style="vertical-align: middle;text-align:left;">
-                                    <a href="editar_usuario.php?id_usuario=<?= $usuario['id_usuario']?>" class="enlace">  
+                                    <a href="javascript:void(0);" class="enlace" data-url="editar_usuario.php?id_usuario=<?= $usuario['id_usuario']?>">  
                                         <?= $usuario['nombre'] ?>
                                     </a>
                                 </td>
@@ -85,4 +84,92 @@
         </div>
     </div>
 </section>
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../js/notificaciones.js"></script>
+<script>
+$(document).ready(function() {
+    let urlDestino = '';
+    let notificacionMostrada = false;
+    
+    // Manejar clic en el enlace o en la fila
+    $('.enlace, tr[data-href]').on('click', function(e) {
+        e.preventDefault();
+        if ($(this).hasClass('enlace')) {
+            urlDestino = $(this).data('url');
+        } else {
+            urlDestino = $(this).data('href');
+        }
+        $('#modalVerificacion').modal('show');
+    });
+
+    // Manejar el botón de verificar
+    $('#btnVerificar').on('click', function() {
+        const password = $('#password').val();
+        
+        $.ajax({
+            url: '../../controladores/crud_usuario.php',
+            type: 'POST',
+            data: {
+                action: 'verificar_password',
+                password: password
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    window.location.href = urlDestino;
+                } else {
+                    if (!notificacionMostrada) {
+                        notificacionMostrada = true;
+                        mostrarError('Contraseña incorrecta');
+                        setTimeout(() => {
+                            notificacionMostrada = false;
+                        }, 3000);
+                    }
+                    $('#password').val('').focus();
+                }
+            },
+            error: function() {
+                if (!notificacionMostrada) {
+                    notificacionMostrada = true;
+                    mostrarError('Error al verificar la contraseña');
+                    setTimeout(() => {
+                        notificacionMostrada = false;
+                    }, 3000);
+                }
+            }
+        });
+    });
+
+    // Limpiar el campo de contraseña cuando se cierra el modal
+    $('#modalVerificacion').on('hidden.bs.modal', function() {
+        $('#password').val('');
+        notificacionMostrada = false;
+    });
+});
+</script>
+
+<!-- Modal de verificación de contraseña -->
+<div class="modal fade" id="modalVerificacion" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Verificación de Contraseña</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="password">Ingrese su contraseña:</label>
+                    <input type="password" class="form-control" id="password" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnVerificar">Verificar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php include("../footer.php"); ?>

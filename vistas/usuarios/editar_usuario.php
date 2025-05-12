@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-8 col-sm-12 mb-3">
-                    <div class="card"> 
+                    <div class="card">
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="nombre" class="form-label">Nombre *</label>

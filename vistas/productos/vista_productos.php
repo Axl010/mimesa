@@ -27,7 +27,7 @@
                                         <th class="text-center bg-thead">SKU</th>
                                         <th class="text-center bg-thead">Estado</th>
                                         <th class="text-center bg-thead">Inventario</th>
-                                        <th class="text-center bg-thead">Peso (kg)</th>
+                                        <th class="text-center bg-thead">Peso Caja (kg)</th>
                                         <th class="text-center bg-thead">Fecha Creación</th>
                                     </tr>
                                 </thead>

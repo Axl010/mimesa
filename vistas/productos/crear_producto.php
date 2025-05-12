@@ -31,7 +31,7 @@
                                 <textarea class="form-control form-control-sm" name="descripcion" id="descripcion" rows="3" tabindex="4"></textarea>
                             </div>
                             <div class="form-group">
-                                <label for="peso" class="form-label">Peso (kg) *</label>
+                                <label for="peso" class="form-label">Peso de Caja (kg) *</label>
                                 <input type="text" class="form-control form-control-sm decimal" name="peso" id="peso" tabindex="5" placeholder="0.00" required/>
                             </div>
                             <div class="form-group">
@@ -39,13 +39,17 @@
                                 <input type="number" class="form-control form-control-sm" name="stock" id="stock" tabindex="6" min="0" placeholder="0" required/>
                             </div>
                             <div class="form-group">
+                                <label for="cantidad_por_paleta" class="form-label">Cantidad por Paleta *</label>
+                                <input type="number" class="form-control form-control-sm" name="cantidad_por_paleta" id="cantidad_por_paleta" tabindex="7" min="1" placeholder="1" required/>
+                            </div>
+                            <div class="form-group">
                                 <label for="foto" class="form-label">Foto</label>
-                                <input type="file" class="form-control form-control-sm" name="foto" id="foto" accept="image/*" tabindex="7">
+                                <input type="file" class="form-control form-control-sm" name="foto" id="foto" accept="image/*" tabindex="8">
                             </div>
                             <!-- Vista previa de la imagen -->
                             <div class="form-group vista-img">
                                 <label class="form-label">Vista previa</label>
-                                <img id="imgPreview" class="mx-auto d-block text-center" src="../../photos/default_producto.jpg" alt="Selecciona una Imagen"/>                                                              
+                                <img id="imgPreview" class="mx-auto d-block text-center" src="../../photos/productos/default_producto.jpg" alt="Selecciona una Imagen"/>                                                              
                             </div>
                             <!-- <div class="form-group">
                                 <label for="id_categoria" class="form-label">Categoría</label>
@@ -65,7 +69,7 @@
                             <div class="card-body">
                             <div class="form-group">
                                 <label for="estado" class="form-label bold">Estado</label>
-                                <select class="form-select form-select-sm" id="estado" name="estado" tabindex="8">
+                                <select class="form-select form-select-sm" id="estado" name="estado" tabindex="9">
                                     <option value="activo" selected>Activo</option>
                                     <option value="inactivo">Inactivo</option>
                                 </select>
@@ -73,8 +77,8 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse mt-4">
-                        <input type="submit" class="btn btn-primary btn-sm btn-confirmar" id="habilitar" name="agregar_producto" value="Guardar" tabindex="8" disabled>
-                        <a href="view_productos.php" role="button" class="btn btn-secondary btn-sm btn-reset  mr-2" tabindex="9">Cancelar</a>
+                        <input type="submit" class="btn btn-primary btn-sm btn-confirmar" id="habilitar" name="agregar_producto" value="Guardar" tabindex="9" disabled>
+                        <a href="view_productos.php" role="button" class="btn btn-secondary btn-sm btn-reset  mr-2" tabindex="10">Cancelar</a>
                     </div>
                 </div>
             </div>
