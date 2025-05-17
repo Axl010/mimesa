@@ -51,29 +51,39 @@
                         </a>
                     </li>
 
+                    <hr class="sidebar-divider my-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../../vistas/productos/vista_productos.php">
+                            <i class="fa fa-box">
+                                <span class="ml-2">Productos</span>
+                            </i>
+                        </a>
+                    </li>
+
                     <!-- Divider -->
                     <hr class="sidebar-divider my-0">
                     <li class="nav-item">
                         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePlatos"
                             aria-expanded="true" aria-controls="collapsePlatos">
                             <i class="fa fa-utensils">
-                                <span class="ml-2">Inventario</span>
+                                <span class="ml-2">Planificación</span>
                             </i>
                         </a>
                         <div id="collapsePlatos" class="collapse <?php echo (in_array($current_page, 
-                        ['vista_productos.php', 'editar_producto.php','crear_producto.php', 
+                        ['vista_completados.php', 'editar_completado.php','crear_completado.php', 
                         'vista_transferencias.php', 'crear_transferencia.php',])) ? 'show' : ''; ?>" aria-labelledby="headingUtilities"
                         data-parent="#accordionSidebar">
                             <div class="bg-white py-2 collapse-inner rounded">
-                                <a class="collapse-item" href="../../vistas/productos/vista_productos.php">Productos</a>
-                                <a class="collapse-item" href="../../vistas/transferencias/vista_transferencias.php">Transferencias</a>
+                                <a class="collapse-item" href="../../vistas/transferencias/vista_transferencias.php">Pedidos</a>
+                                <a class="collapse-item" href="../../vistas/transferencias/vista_completados.php">Completados</a>
                             </div>
                         </div>
                     </li>
+                    
                     <hr class="sidebar-divider my-0">
                     <li class="nav-item">
                         <a class="nav-link" href="../../vistas/conductores/vista_conductores.php">
-                            <i class="fa fa-user">
+                            <i class="fa fa-user-tie">
                                 <span class="ml-2">Conductores</span>
                             </i>
                         </a>
@@ -81,7 +91,7 @@
                     <hr class="sidebar-divider my-0">
                     <li class="nav-item">
                         <a class="nav-link" href="../../vistas/clientes/vista_clientes.php">
-                            <i class="fa fa-user">
+                            <i class="fa fa-users">
                                 <span class="ml-2">Clientes</span>
                             </i>
                         </a>
@@ -89,7 +99,7 @@
                     <hr class="sidebar-divider my-0">
                     <li class="nav-item">
                         <a class="nav-link" href="../../vistas/usuarios/vista_usuarios.php">
-                            <i class="fa fa-user">
+                            <i class="fa fa-user-shield">
                                 <span class="ml-2">Usuarios</span>
                             </i>
                         </a>

@@ -33,7 +33,7 @@ if(isset($_POST['sesion'])){
                     $ultima_conexion->bindParam(":id_usuario", $usuario['id_usuario']);
                     $ultima_conexion->execute();
                     
-                    header("Location: vistas/productos/vista_productos.php");
+                    header("Location: vistas/inicio/vista_inicio.php");
                     exit(); 
                 } else {
                     $mensaje = "Error: Usuario y/o contraseña incorrecta.";

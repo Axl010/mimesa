@@ -15,7 +15,7 @@
                     <a href="vista_transferencias.php" class="button-back">
                         <i class="fas fa-arrow-left"></i>
                     </a>
-                    <h2 class="h4 ml-1">Agregar Transferencia</h2>
+                    <h2 class="h4 ml-1">Agregar Pedido</h2>
                 </div>
             </div>
             <div class="col-lg-8 col-md-7 col-sm-12 mb-3">
@@ -205,11 +205,12 @@
             paletasTotales = 0;
             productosAgregados.forEach(producto => {
                 pesoTotal += parseFloat(producto.peso) * parseFloat(producto.cantidad);
-                paletasTotales += Math.ceil(parseFloat(producto.cantidad) / parseFloat(producto.cantidadPorPaleta));
+                // Calcular paletas usando decimales
+                paletasTotales += parseFloat(producto.cantidad) / parseFloat(producto.cantidadPorPaleta);
             });
             
             $("#pesoTotal").text(pesoTotal.toFixed(2));
-            $("#paletasTotales").text(paletasTotales);
+            $("#paletasTotales").text(paletasTotales.toFixed(2));
             verificarCapacidad();
         }
         

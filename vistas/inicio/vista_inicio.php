@@ -35,7 +35,7 @@
             </a>
         </div>
         <div class="col-xl-4 col-md-4 col-sm-6 mb-3">
-            <a href="../../vistas/transferencias/vista_transferencias.php" class="text-decoration-none">
+            <a href="../../vistas/transferencias/vista_completados.php" class="text-decoration-none">
                 <div class="card h-100 shadow-sm hover-shadow">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
@@ -43,7 +43,7 @@
                                 <div class="icon-box bg-success bg-opacity-10 p-3 rounded">
                                     <i class="fas fa-exchange-alt fa-2x text-success"></i>
                                 </div>
-                                <h6 class="card-title mb-0 text-muted ms-3">Transferencias</h6>
+                                <h6 class="card-title mb-0 text-muted ms-3">Pedidos Completados</h6>
                             </div>
                             <h4 class="mb-0 fw-bold" id="totalTransferencias">
                                 <?php echo $totalTransferencias; ?>

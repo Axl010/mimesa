@@ -40,6 +40,7 @@
             LEFT JOIN conductores con ON t.id_conductor = con.id_conductor
             LEFT JOIN detalle_transferencia dt ON t.id_transferencia = dt.id_transferencia
             LEFT JOIN productos p ON dt.id_producto = p.id_producto
+            WHERE t.estado = 'pendiente' OR t.estado = 'cancelada'
             GROUP BY t.id_transferencia, t.fecha_despacho, t.id_vehiculo, t.id_conductor, 
                      t.id_responsable, t.origen, t.id_cliente, t.direccion_destino, 
                      t.observacion, t.estado, t.fecha_creacion,
@@ -48,6 +49,30 @@
     $stmt = $conexion->prepare($sql);
     $stmt->execute();
     $transferencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $consulta_trans_completadas = $conexion->prepare("SELECT t.*, 
+            c.nombre as nombre_cliente, 
+            c.region as destino,
+            v.tipo as tipo_vehiculo, 
+            v.placa as placa_vehiculo,
+            con.nombre as nombre_conductor, 
+            con.cedula as cedula_conductor,
+            COALESCE(SUM(dt.peso_kg), 0) as peso_total,
+            COUNT(dt.id_detalle) as cantidad_productos,
+            COALESCE(SUM(dt.cantidad / p.cantidad_por_paleta), 0) as total_paletas
+            FROM transferencias t 
+            LEFT JOIN clientes c ON t.id_cliente = c.id_cliente 
+            LEFT JOIN vehiculos v ON t.id_vehiculo = v.id_vehiculo 
+            LEFT JOIN conductores con ON t.id_conductor = con.id_conductor
+            LEFT JOIN detalle_transferencia dt ON t.id_transferencia = dt.id_transferencia
+            LEFT JOIN productos p ON dt.id_producto = p.id_producto
+            WHERE t.estado = 'completada'
+            GROUP BY t.id_transferencia, t.fecha_despacho, t.id_vehiculo, t.id_conductor, 
+                     t.id_responsable, t.origen, t.id_cliente, t.direccion_destino, 
+                     t.observacion, t.estado, t.fecha_creacion,
+                     c.nombre, c.region, v.tipo, v.placa, con.nombre, con.cedula");
+    $consulta_trans_completadas->execute();
+    $trans_completadas = $consulta_trans_completadas->fetchAll(PDO::FETCH_ASSOC);
 
     // Definir fecha actual
     $fecha_actual = date('Y-m-d');

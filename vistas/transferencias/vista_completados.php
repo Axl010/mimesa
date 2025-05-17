@@ -6,15 +6,12 @@
 <section class="content-header mb-3">
         <div class="d-flex flex-wrap justify-content-between align-items-center ml-3 mb-3">
             <h2 class="h3 mb-0">
-                Pedidos
+                Pedidos Completados
             </h2>
             <div class="d-flex">
-                <button id="btnImprimir" class="btn btn-info btn-sm mr-2 d-flex align-items-center justify-content-center" title="Imprimir Reporte">
+                <button id="btnImprimir" class="btn btn-info btn-sm mr-3 d-flex align-items-center justify-content-center" title="Imprimir Reporte">
                     <i class="fas fa-print mr-2"></i>Imprimir
                 </button>
-                <a href="crear_transferencia.php" class="btn btn-dark btn-sm mr-3 info d-flex align-items-center justify-content-center" tabindex="1">
-                    <i class="fa fa-plus mr-2"></i>Agregar Pedido
-                </a>
             </div>
         </div>
 </section>
@@ -39,12 +36,11 @@
                                     <th class="text-center bg-thead">Estado</th>
                                     <th class="text-left bg-thead">Fecha Creación</th>
                                     <th class="text-left bg-thead">Fecha Despacho</th>
-                                    <th class="text-center bg-thead">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                             <?php 
-                                foreach ($transferencias as $transferencia) {
+                                foreach ($trans_completadas as $transferencia) {
                                     // Formatear fechas
                                     $fechaCreacion = date('d-m-Y H:i', strtotime($transferencia['fecha_creacion']));
                                     $fechaDespacho = date('d-m-Y', strtotime($transferencia['fecha_despacho']));
@@ -67,20 +63,6 @@
                                 </td>
                                 <td><?= $fechaCreacion ?></td>
                                 <td><?= $fechaDespacho ?></td>
-                                <td class="text-center">
-                                    <?php if ($transferencia['estado'] === 'pendiente') { ?>
-                                        <button class="btn btn-success btn-sm aceptar-transferencia" data-id="<?= $transferencia['id_transferencia'] ?>" title="Aceptar Transferencia">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                        <button class="btn btn-danger btn-sm cancelar-transferencia" data-id="<?= $transferencia['id_transferencia'] ?>" title="Cancelar Transferencia">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    <?php } elseif ($transferencia['estado'] === 'cancelada') { ?>
-                                        <button class="btn btn-warning btn-sm restaurar-transferencia" data-id="<?= $transferencia['id_transferencia'] ?>" title="Restaurar Transferencia">
-                                            <i class="fas fa-undo"></i>
-                                        </button>
-                                    <?php } ?>
-                                </td>
                             </tr>
                             <?php } ?>
                             </tbody>
@@ -139,18 +121,6 @@
         height: 50px;
         object-fit: cover;
         border-radius: 4px;
-    }
-    .aceptar-transferencia, .cancelar-transferencia, .restaurar-transferencia {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.25rem 0.5rem;
-        width: 32px !important;
-        height: 32px;
-    }
-    .aceptar-transferencia i, .cancelar-transferencia i, .restaurar-transferencia i {
-        margin: 0;
-        font-size: 0.875rem;
     }
     
     /* Estilos para la vista normal (modal) */
@@ -404,28 +374,8 @@
             });
         }
 
-        // Función para actualizar el estado de una transferencia
-        function actualizarEstadoTransferencia(id_transferencia, nuevoEstado) {
-            return $.ajax({
-                url: '../../controladores/crud_transferencias.php',
-                type: 'POST',
-                data: {
-                    action: 'actualizar_estado_transferencia',
-                    id_transferencia: id_transferencia,
-                    nuevo_estado: nuevoEstado
-                },
-                dataType: 'json'
-            });
-        }
-
         // Manejar el clic en la fila
         $('#table tbody').on('click', 'tr', function(e) {
-            // Si el clic fue en un botón de acción o en el botón responsive, no expandir la fila
-            if ($(e.target).closest('.aceptar-transferencia, .cancelar-transferencia, .restaurar-transferencia, .dtr-control, .dtr-data').length || 
-                $(e.target).hasClass('dtr-control')) {
-                return;
-            }
-
             var tr = $(this);
             var id_transferencia = tr.data('id');
             var row = $('#table').DataTable().row(tr);
@@ -479,72 +429,6 @@
                         row.child('<div class="alert alert-danger m-3">' + error.message + '</div>').show();
                     });
             }
-        });
-
-        // Manejar clic en botón de aceptar transferencia
-        $(document).on('click', '.aceptar-transferencia', function(e) {
-            e.stopPropagation();
-            var id_transferencia = $(this).data('id');
-            var button = $(this);
-            
-            confirmar('¿Estás seguro de aceptar esta transferencia?', 
-                function() {
-                    actualizarEstadoTransferencia(id_transferencia, 'completada')
-                        .then(function(response) {
-                            if (response.error) {
-                                throw new Error(response.mensaje);
-                            }
-                            location.reload();
-                        })
-                        .catch(function(error) {
-                            mostrarError('Error al actualizar el estado: ' + error.message);
-                        });
-                }
-            );
-        });
-
-        // Manejar clic en botón de cancelar transferencia
-        $(document).on('click', '.cancelar-transferencia', function(e) {
-            e.stopPropagation();
-            var id_transferencia = $(this).data('id');
-            var button = $(this);
-            
-            confirmar('¿Estás seguro de cancelar esta transferencia?', 
-                function() {
-                    actualizarEstadoTransferencia(id_transferencia, 'cancelada')
-                        .then(function(response) {
-                            if (response.error) {
-                                throw new Error(response.mensaje);
-                            }
-                            location.reload();
-                        })
-                        .catch(function(error) {
-                            mostrarError('Error al actualizar el estado: ' + error.message);
-                        });
-                }
-            );
-        });
-
-        // Manejar clic en botón de restaurar transferencia
-        $(document).on('click', '.restaurar-transferencia', function(e) {
-            e.stopPropagation();
-            var id_transferencia = $(this).data('id');
-            var button = $(this);
-            
-            confirmar('¿Estás seguro de restaurar esta transferencia?', 
-                function() {
-                    actualizarEstadoTransferencia(id_transferencia, 'pendiente')
-                        .then(function(response) {
-                            if (response.error) {
-                                throw new Error(response.mensaje);
-                            }
-                            location.reload();
-                        })
-                        .catch(function(error) {
-                            mostrarError('Error al actualizar el estado: ' + error.message);
-                        });
-                }
-            );
         });
 
         // Función para cargar el reporte de impresión
@@ -804,12 +688,6 @@
 
         // Agregar selección de fila
         $('#table tbody').on('click', 'tr', function(e) {
-            // Si el clic fue en un botón de acción o en el botón responsive, no seleccionar la fila
-            if ($(e.target).closest('.aceptar-transferencia, .cancelar-transferencia, .restaurar-transferencia, .dtr-control, .dtr-data').length || 
-                $(e.target).hasClass('dtr-control')) {
-                return;
-            }
-
             if ($(this).hasClass('selected')) {
                 $(this).removeClass('selected');
             } else {
