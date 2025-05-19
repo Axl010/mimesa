@@ -17,7 +17,7 @@
         }
 
         public function getTotalTransferencias() {
-            $sql = "SELECT COUNT(*) as total FROM transferencias WHERE estado = 'completada'";
+            $sql = "SELECT COUNT(*) as total FROM transferencias WHERE estado = 'facturado'";
             $consulta = $this->conectar->prepare($sql);
             $consulta->execute();
             $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
@@ -47,6 +47,14 @@
             $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
             return $resultado['total'];
         }
+
+        public function getTotalTransportes() {
+            $sql = "SELECT COUNT(*) as total FROM vehiculos WHERE estado = 'activo'";
+            $consulta = $this->conectar->prepare($sql);
+            $consulta->execute();
+            $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+            return $resultado['total'];
+        }
     }
 
     // Instanciar la clase y obtener los totales
@@ -56,4 +64,5 @@
     $totalConductores = $crud->getTotalConductores();
     $totalClientes = $crud->getTotalClientes();
     $totalUsuarios = $crud->getTotalUsuarios();
+    $totalTransportes = $crud->getTotalTransportes();
 ?>

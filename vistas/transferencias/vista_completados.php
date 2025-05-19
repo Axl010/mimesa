@@ -6,7 +6,7 @@
 <section class="content-header mb-3">
         <div class="d-flex flex-wrap justify-content-between align-items-center ml-3 mb-3">
             <h2 class="h3 mb-0">
-                Pedidos Completados
+                Pedidos Facturados
             </h2>
             <div class="d-flex">
                 <button id="btnImprimir" class="btn btn-info btn-sm mr-3 d-flex align-items-center justify-content-center" title="Imprimir Reporte">
@@ -46,7 +46,7 @@
                                     $fechaDespacho = date('d-m-Y', strtotime($transferencia['fecha_despacho']));
                                     
                                     // Determinar la clase del estado
-                                    $estadoClass = $transferencia['estado'] === 'completada' ? 'estado-activo' : 
+                                    $estadoClass = $transferencia['estado'] === 'facturado' ? 'estado-activo' : 
                                                  ($transferencia['estado'] === 'pendiente' ? 'estado-pendiente' : 'estado-inactivo');
                             ?>
                             <tr data-id="<?= $transferencia['id_transferencia'] ?>">

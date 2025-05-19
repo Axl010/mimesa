@@ -43,7 +43,7 @@
                                 <div class="icon-box bg-success bg-opacity-10 p-3 rounded">
                                     <i class="fas fa-exchange-alt fa-2x text-success"></i>
                                 </div>
-                                <h6 class="card-title mb-0 text-muted ms-3">Pedidos Completados</h6>
+                                <h6 class="card-title mb-0 text-muted ms-3">Pedidos Facturados</h6>
                             </div>
                             <h4 class="mb-0 fw-bold" id="totalTransferencias">
                                 <?php echo $totalTransferencias; ?>
@@ -76,7 +76,7 @@
 
     <!-- Segunda fila de tarjetas -->
     <div class="row">
-        <div class="col-xl-6 col-md-6 col-sm-6 mb-3">
+        <div class="col-xl-4 col-md-4 col-sm-6 mb-3">
             <a href="../../vistas/clientes/vista_clientes.php" class="text-decoration-none">
                 <div class="card h-100 shadow-sm hover-shadow">
                     <div class="card-body">
@@ -95,7 +95,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-xl-6 col-md-6 col-sm-6 mb-3">
+        <div class="col-xl-4 col-md-4 col-sm-6 mb-3">
             <a href="../../vistas/usuarios/vista_usuarios.php" class="text-decoration-none">
                 <div class="card h-100 shadow-sm hover-shadow">
                     <div class="card-body">
@@ -108,6 +108,25 @@
                             </div>
                             <h4 class="mb-0 fw-bold" id="totalUsuarios">
                                 <?php echo $totalUsuarios; ?>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-4 col-md-4 col-sm-6 mb-3">
+            <a href="../../vistas/transporte/vista_transporte.php" class="text-decoration-none">
+                <div class="card h-100 shadow-sm hover-shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box bg-secondary bg-opacity-10 p-3 rounded">
+                                    <i class="fas fa-truck fa-2x text-secondary"></i>
+                                </div>
+                                <h6 class="card-title mb-0 text-muted ms-3">Transportes Activos</h6>
+                            </div>
+                            <h4 class="mb-0 fw-bold" id="totalTransportes">
+                                <?php echo $totalTransportes; ?>
                             </h4>
                         </div>
                     </div>

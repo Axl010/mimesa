@@ -50,8 +50,8 @@
                                     $fechaDespacho = date('d-m-Y', strtotime($transferencia['fecha_despacho']));
                                     
                                     // Determinar la clase del estado
-                                    $estadoClass = $transferencia['estado'] === 'completada' ? 'estado-activo' : 
-                                                 ($transferencia['estado'] === 'pendiente' ? 'estado-pendiente' : 'estado-inactivo');
+                                    $estadoClass = $transferencia['estado'] === 'facturado' ? 'estado-activo' : 
+                                                 ($transferencia['estado'] === 'torre de control' ? 'estado-pendiente' : 'estado-inactivo');
                             ?>
                             <tr data-id="<?= $transferencia['id_transferencia'] ?>">
                                 <td><?= $transferencia['id_transferencia'] ?></td>
@@ -68,14 +68,14 @@
                                 <td><?= $fechaCreacion ?></td>
                                 <td><?= $fechaDespacho ?></td>
                                 <td class="text-center">
-                                    <?php if ($transferencia['estado'] === 'pendiente') { ?>
+                                    <?php if ($transferencia['estado'] === 'torre de control') { ?>
                                         <button class="btn btn-success btn-sm aceptar-transferencia" data-id="<?= $transferencia['id_transferencia'] ?>" title="Aceptar Transferencia">
                                             <i class="fas fa-check"></i>
                                         </button>
                                         <button class="btn btn-danger btn-sm cancelar-transferencia" data-id="<?= $transferencia['id_transferencia'] ?>" title="Cancelar Transferencia">
                                             <i class="fas fa-times"></i>
                                         </button>
-                                    <?php } elseif ($transferencia['estado'] === 'cancelada') { ?>
+                                    <?php } elseif ($transferencia['estado'] === 'cancelado') { ?>
                                         <button class="btn btn-warning btn-sm restaurar-transferencia" data-id="<?= $transferencia['id_transferencia'] ?>" title="Restaurar Transferencia">
                                             <i class="fas fa-undo"></i>
                                         </button>
@@ -112,280 +112,6 @@
         </div>
     </div>
 </div>
-
-<style>
-    .productos-row {
-        background-color: #f8f9fa;
-    }
-    .productos-row td {
-        padding: 1rem !important;
-    }
-    .productos-table {
-        width: 100%;
-        margin-bottom: 0;
-    }
-    .productos-table th {
-        background-color:#01903E;
-        color: #f8f9fa;
-    }
-    .loading-spinner {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 1rem;
-    }
-    .producto-foto {
-        width: 50px;
-        height: 50px;
-        object-fit: cover;
-        border-radius: 4px;
-    }
-    .aceptar-transferencia, .cancelar-transferencia, .restaurar-transferencia {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.25rem 0.5rem;
-        width: 32px !important;
-        height: 32px;
-    }
-    .aceptar-transferencia i, .cancelar-transferencia i, .restaurar-transferencia i {
-        margin: 0;
-        font-size: 0.875rem;
-    }
-    
-    /* Estilos para la vista normal (modal) */
-    .reporte {
-        width: 100%;
-    }
-    .pagina {
-        margin-bottom: 20px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        background: #fff;
-    }
-    .pagina:last-child {
-        margin-bottom: 0;
-    }
-    .reporte-header {
-        text-align: center;
-        margin-bottom: 10px;
-    }
-    .reporte-header h4 {
-        font-size: 16px;
-        margin: 0 0 3px 0;
-        font-weight: bold;
-    }
-    .reporte-header p {
-        font-size: 12px;
-        margin: 0;
-    }
-    .reporte-tabla {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 10px;
-        font-size: 12px;
-    }
-    .reporte-tabla th, .reporte-tabla td {
-        border: 1px solid #ddd;
-        padding: 4px;
-        text-align: left;
-        white-space: normal;
-        word-wrap: break-word;
-        vertical-align: middle;
-    }
-    .reporte-tabla th {
-        background-color: #e9ecef;
-        color: #000;
-        font-weight: bold;
-    }
-    .tabla-vehiculo {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        font-size: 12px;
-    }
-    .tabla-vehiculo th, .tabla-vehiculo td {
-        border: 1px solid #ddd;
-        padding: 4px;
-        text-align: left;
-    }
-    .tabla-vehiculo th {
-        background-color: #e9ecef;
-        color: #000;
-        font-weight: bold;
-    }
-
-    /* Estilos para impresión */
-    @media print {
-        @page {
-            size: landscape;
-            margin: 0.5cm;
-        }
-        
-        body * {
-            visibility: hidden;
-        }
-        
-        #modalImpresion, #modalImpresion * {
-            visibility: visible;
-        }
-        
-        #modalImpresion {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            border: none !important;
-            box-shadow: none !important;
-            overflow: visible !important;
-        }
-        
-        .modal-dialog {
-            max-width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            border: none !important;
-            box-shadow: none !important;
-            overflow: visible !important;
-        }
-        
-        .modal-content {
-            border: none !important;
-            box-shadow: none !important;
-            background: none !important;
-            overflow: visible !important;
-        }
-        
-        .modal-header,
-        .modal-footer,
-        .no-print {
-            display: none !important;
-        }
-        
-        .modal-body {
-            padding: 0 !important;
-            border: none !important;
-            box-shadow: none !important;
-            background: none !important;
-            overflow: visible !important;
-        }
-        
-        .reporte {
-            width: 100%;
-            overflow: visible !important;
-        }
-        
-        .pagina {
-            page-break-after: always;
-            page-break-before: always;
-            page-break-inside: avoid;
-            border: none;
-            margin: 0;
-            padding: 0;
-            overflow: visible !important;
-            height: auto !important;
-        }
-        
-        .pagina:first-child {
-            page-break-before: avoid;
-        }
-        
-        .pagina:last-child {
-            page-break-after: avoid;
-        }
-        
-        .reporte-header {
-            margin-bottom: 10px;
-        }
-        
-        .pagina:nth-child(2) .reporte-header {
-            margin-top: 20px;
-        }
-        
-        .reporte-header h4 {
-            margin: 0;
-            padding: 0;
-            font-size: 14px;
-        }
-        
-        .reporte-header p {
-            margin: 0;
-            font-size: 11px;
-        }
-        
-        .reporte-tabla {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 8px;
-            font-size: 11px;
-        }
-        
-        .reporte-tabla th,
-        .reporte-tabla td {
-            border: none;
-            padding: 3px;
-        }
-        
-        .reporte-tabla th {
-            background-color: #e9ecef !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-        
-        .tabla-vehiculo {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 80px;
-            font-size: 11px;
-        }
-        
-        .tabla-vehiculo th,
-        .tabla-vehiculo td {
-            border: none;
-            padding: 3px;
-        }
-        
-        .tabla-vehiculo th {
-            background-color: #e9ecef !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-
-        tr[style*="background-color"] {
-            background-color: #e9ecef !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-
-        /* Eliminar scrollbar */
-        ::-webkit-scrollbar {
-            display: none !important;
-        }
-        
-        * {
-            -ms-overflow-style: none !important;
-            scrollbar-width: none !important;
-        }
-    }
-    
-    /* Estilos para el modal de impresión */
-    #modalImpresion .modal-dialog {
-        max-width: 800px;
-        margin: 1.75rem auto;
-    }
-
-    #modalImpresion .modal-content {
-        min-height: auto;
-    }
-
-    #modalImpresion .modal-body {
-        padding: 10px;
-    }
-
-    #contenidoImpresion {
-        padding: 5px;
-    }
-</style>
 <script src="../../plugins/jquery/jquery.min.js"></script>
 <!-- <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script> -->
 <script src="../../js/notificaciones.js"></script>
@@ -489,7 +215,7 @@
             
             confirmar('¿Estás seguro de aceptar esta transferencia?', 
                 function() {
-                    actualizarEstadoTransferencia(id_transferencia, 'completada')
+                    actualizarEstadoTransferencia(id_transferencia, 'facturado')
                         .then(function(response) {
                             if (response.error) {
                                 throw new Error(response.mensaje);
@@ -511,7 +237,7 @@
             
             confirmar('¿Estás seguro de cancelar esta transferencia?', 
                 function() {
-                    actualizarEstadoTransferencia(id_transferencia, 'cancelada')
+                    actualizarEstadoTransferencia(id_transferencia, 'cancelado')
                         .then(function(response) {
                             if (response.error) {
                                 throw new Error(response.mensaje);
@@ -533,7 +259,7 @@
             
             confirmar('¿Estás seguro de restaurar esta transferencia?', 
                 function() {
-                    actualizarEstadoTransferencia(id_transferencia, 'pendiente')
+                    actualizarEstadoTransferencia(id_transferencia, 'torre de control')
                         .then(function(response) {
                             if (response.error) {
                                 throw new Error(response.mensaje);
@@ -779,14 +505,14 @@
         $('#btnImprimir').on('click', function() {
             var selectedRow = $('tr.selected');
             if (selectedRow.length === 0) {
-                mostrarAdvertencia('Por favor, seleccione una transferencia para imprimir');
+                mostrarAdvertencia('Por favor, selecciona un pedido para imprimir');
                 return;
             }
             
             // Verificar si la transferencia está cancelada
-            var estado = selectedRow.find('td:eq(7) span').text().toLowerCase();
-            if (estado === 'cancelada') {
-                mostrarError('No puedes imprimir una transferencia cancelada');
+            var estado = selectedRow.find('td:eq(8) span').text().toLowerCase();
+            if (estado === 'cancelado') {
+                mostrarError('No puedes imprimir un pedido cancelado');
                 return;
             }
             

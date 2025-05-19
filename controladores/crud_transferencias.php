@@ -40,7 +40,7 @@
             LEFT JOIN conductores con ON t.id_conductor = con.id_conductor
             LEFT JOIN detalle_transferencia dt ON t.id_transferencia = dt.id_transferencia
             LEFT JOIN productos p ON dt.id_producto = p.id_producto
-            WHERE t.estado = 'pendiente' OR t.estado = 'cancelada'
+            WHERE t.estado = 'torre de control' OR t.estado = 'cancelado'
             GROUP BY t.id_transferencia, t.fecha_despacho, t.id_vehiculo, t.id_conductor, 
                      t.id_responsable, t.origen, t.id_cliente, t.direccion_destino, 
                      t.observacion, t.estado, t.fecha_creacion,
@@ -66,7 +66,7 @@
             LEFT JOIN conductores con ON t.id_conductor = con.id_conductor
             LEFT JOIN detalle_transferencia dt ON t.id_transferencia = dt.id_transferencia
             LEFT JOIN productos p ON dt.id_producto = p.id_producto
-            WHERE t.estado = 'completada'
+            WHERE t.estado = 'facturado'
             GROUP BY t.id_transferencia, t.fecha_despacho, t.id_vehiculo, t.id_conductor, 
                      t.id_responsable, t.origen, t.id_cliente, t.direccion_destino, 
                      t.observacion, t.estado, t.fecha_creacion,
@@ -92,7 +92,7 @@
             
             // Verificar que existan productos
             if(!isset($_POST['productos']) || empty($_POST['productos'])) {
-                throw new Exception("No se han agregado productos a la transferencia");
+                throw new Exception("No se han agregado productos al pedido");
             }
             
             // Crear la transferencia
@@ -112,7 +112,7 @@
                                 :id_conductor,
                                 :origen,
                                 :id_cliente,
-                                'pendiente',
+                                'torre de control',
                                 :observacion
                                 )";
             
@@ -129,7 +129,7 @@
             
             // Verificar que se haya creado la transferencia
             if(!$id_transferencia) {
-                throw new Exception("Error al crear la transferencia");
+                throw new Exception("Error al crear el pedido");
             }
             
             // Recorrer y guardar cada producto
@@ -277,7 +277,7 @@
             $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             if (empty($productos)) {
-                throw new Exception("No se encontraron productos para esta transferencia");
+                throw new Exception("No se encontraron productos para este pedido");
             }
             
             $resultado = array(
@@ -336,7 +336,7 @@
             $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
 
             // Manejar el stock según el cambio de estado
-            if ($estado_actual === 'pendiente' && $nuevo_estado === 'cancelada') {
+            if ($estado_actual === 'torre de control' && $nuevo_estado === 'cancelado') {
                 // Devolver stock al cancelar
                 foreach ($productos as $producto) {
                     $nuevo_stock = $producto['stock'] + $producto['cantidad'];
@@ -347,7 +347,7 @@
                     $stmt_update->execute();
                 }
             } 
-            elseif ($estado_actual === 'cancelada' && $nuevo_estado === 'pendiente') {
+            elseif ($estado_actual === 'cancelado' && $nuevo_estado === 'torre de control') {
                 // Verificar y restar stock al restaurar
                 foreach ($productos as $producto) {
                     if ($producto['stock'] < $producto['cantidad']) {

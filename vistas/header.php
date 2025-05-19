@@ -25,6 +25,7 @@
             <link rel="stylesheet" href="../../plugins/datatable/dataTables.bootstrap5.min.css">
             <link rel="stylesheet" href="../../plugins/datatable/responsive.bootstrap5.min.css">
             <!-- Personal Style -->
+            <link rel="stylesheet" href="../../css/pedido_style.css">
             <link rel="stylesheet" href="../../css/style.css">
         </head>
         <body id="page-top">
@@ -43,7 +44,7 @@
                     <hr class="sidebar-divider my-0">
 
                     <!-- Nav Item - Dashboard -->
-                    <li class="nav-item">
+                    <li class="nav-item <?php echo ($current_page == 'vista_inicio.php') ? 'active' : ''; ?>">
                         <a class="nav-link" href="../../vistas/inicio/vista_inicio.php">
                             <i class="fas fa-home">
                                 <span class="ml-2">Inicio</span>
@@ -52,7 +53,7 @@
                     </li>
 
                     <hr class="sidebar-divider my-0">
-                    <li class="nav-item">
+                    <li class="nav-item <?php echo ($current_page == 'vista_productos.php') ? 'active' : ''; ?>">
                         <a class="nav-link" href="../../vistas/productos/vista_productos.php">
                             <i class="fa fa-box">
                                 <span class="ml-2">Productos</span>
@@ -62,34 +63,43 @@
 
                     <!-- Divider -->
                     <hr class="sidebar-divider my-0">
-                    <li class="nav-item">
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePlatos"
-                            aria-expanded="true" aria-controls="collapsePlatos">
+                    <li class="nav-item <?php echo (in_array($current_page, ['vista_transferencias.php', 'crear_transferencia.php'])) ? 'active' : ''; ?>">
+                        <a class="nav-link" href="../../vistas/transferencias/vista_transferencias.php">
                             <i class="fa fa-utensils">
-                                <span class="ml-2">Planificación</span>
+                                <span class="ml-2">Pedidos</span>
                             </i>
                         </a>
-                        <div id="collapsePlatos" class="collapse <?php echo (in_array($current_page, 
-                        ['vista_completados.php', 'editar_completado.php','crear_completado.php', 
-                        'vista_transferencias.php', 'crear_transferencia.php',])) ? 'show' : ''; ?>" aria-labelledby="headingUtilities"
-                        data-parent="#accordionSidebar">
-                            <div class="bg-white py-2 collapse-inner rounded">
-                                <a class="collapse-item" href="../../vistas/transferencias/vista_transferencias.php">Pedidos</a>
-                                <a class="collapse-item" href="../../vistas/transferencias/vista_completados.php">Completados</a>
-                            </div>
-                        </div>
+                    </li>
+
+                    <hr class="sidebar-divider my-0">
+                    <li class="nav-item <?php echo (in_array($current_page, ['vista_completados.php'])) ? 'active' : ''; ?>">
+                        <a class="nav-link" href="../../vistas/transferencias/vista_completados.php">
+                            <i class="fa fa-file-invoice">
+                                <span class="ml-2">Facturados</span>
+                            </i>
+                        </a>
                     </li>
                     
                     <hr class="sidebar-divider my-0">
-                    <li class="nav-item">
+                    <li class="nav-item <?php echo ($current_page == 'vista_conductores.php') ? 'active' : ''; ?>">
                         <a class="nav-link" href="../../vistas/conductores/vista_conductores.php">
                             <i class="fa fa-user-tie">
                                 <span class="ml-2">Conductores</span>
                             </i>
                         </a>
                     </li>
+
                     <hr class="sidebar-divider my-0">
-                    <li class="nav-item">
+                    <li class="nav-item <?php echo ($current_page == 'vista_transporte.php') ? 'active' : ''; ?>">
+                        <a class="nav-link" href="../../vistas/transporte/vista_transporte.php">
+                            <i class="fa fa-truck">
+                                <span class="ml-2">Transporte</span>
+                            </i>
+                        </a>
+                    </li>
+
+                    <hr class="sidebar-divider my-0">
+                    <li class="nav-item <?php echo ($current_page == 'vista_clientes.php') ? 'active' : ''; ?>">
                         <a class="nav-link" href="../../vistas/clientes/vista_clientes.php">
                             <i class="fa fa-users">
                                 <span class="ml-2">Clientes</span>
@@ -97,7 +107,7 @@
                         </a>
                     </li>
                     <hr class="sidebar-divider my-0">
-                    <li class="nav-item">
+                    <li class="nav-item <?php echo ($current_page == 'vista_usuarios.php') ? 'active' : ''; ?>">
                         <a class="nav-link" href="../../vistas/usuarios/vista_usuarios.php">
                             <i class="fa fa-user-shield">
                                 <span class="ml-2">Usuarios</span>
@@ -105,7 +115,7 @@
                         </a>
                     </li>
                     <!-- Sidebar Toggler (Sidebar) -->
-                    <div class="text-center d-none d-md-inline">
+                    <div class="text-center d-none d-md-inline mt-3">
                         <button class="rounded-circle border-0" id="sidebarToggle"></button>
                     </div>
                 </ul>
