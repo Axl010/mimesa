@@ -54,6 +54,17 @@
                             <input type="date" class="form-control" name="fecha_despacho" value="<?= $fecha_actual ?>" required>
                         </div>
                         <div class="form-group">
+                            <label for="id_transporte" class="form-label">Transporte *</label>
+                            <select class="form-select form-select-sm buscador" name="id_transporte" data-placeholder="Selecciona un transporte" required>
+                                <option value="" disabled selected></option>
+                                <?php foreach ($lista_transportes as $transporte) { ?>
+                                    <option value="<?= $transporte['id_transporte']; ?>">
+                                        <?= $transporte['nombre']; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="id_mesa" class="form-label">Vehículo *</label>
                             <select class="form-select form-select-sm buscador" name="id_vehiculo" data-placeholder="Selecciona una vehiculo" required>
                                 <option value="" disabled selected></option>

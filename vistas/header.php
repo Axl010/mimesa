@@ -65,7 +65,7 @@
                     <hr class="sidebar-divider my-0">
                     <li class="nav-item <?php echo (in_array($current_page, ['vista_transferencias.php', 'crear_transferencia.php'])) ? 'active' : ''; ?>">
                         <a class="nav-link" href="../../vistas/transferencias/vista_transferencias.php">
-                            <i class="fa fa-utensils">
+                            <i class="fa fa-exchange-alt">
                                 <span class="ml-2">Pedidos</span>
                             </i>
                         </a>
@@ -93,7 +93,7 @@
                     <li class="nav-item <?php echo ($current_page == 'vista_transporte.php') ? 'active' : ''; ?>">
                         <a class="nav-link" href="../../vistas/transporte/vista_transporte.php">
                             <i class="fa fa-truck">
-                                <span class="ml-2">Transporte</span>
+                                <span class="ml-2">Vehículos</span>
                             </i>
                         </a>
                     </li>

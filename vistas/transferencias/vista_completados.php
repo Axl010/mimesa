@@ -525,7 +525,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>TRANSPORTE</td>
+                                <td>${transferencia.nombre_transporte || '-'}</td>
                                 <td>${transferencia.nombre_conductor || '-'}</td>
                                 <td>${transferencia.cedula_conductor || '-'}</td>
                                 <td>${transferencia.placa_vehiculo || '-'}</td>
@@ -631,7 +631,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>TRANSPORTE</td>
+                                <td>${transferencia.nombre_transporte || '-'}</td>
                                 <td>${transferencia.nombre_conductor || '-'}</td>
                                 <td>${transferencia.cedula_conductor || '-'}</td>
                                 <td>${transferencia.placa_vehiculo || '-'}</td>

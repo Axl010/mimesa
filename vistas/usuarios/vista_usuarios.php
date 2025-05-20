@@ -87,23 +87,27 @@
 <script src="../../plugins/jquery/jquery.min.js"></script>
 <script src="../../js/notificaciones.js"></script>
 <script>
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
     let urlDestino = '';
     let notificacionMostrada = false;
+    let idUsuarioEditar = '';
     
     // Manejar clic en el enlace o en la fila
     $('.enlace, tr[data-href]').on('click', function(e) {
         e.preventDefault();
         if ($(this).hasClass('enlace')) {
             urlDestino = $(this).data('url');
+            idUsuarioEditar = urlDestino.split('=')[1];
         } else {
             urlDestino = $(this).data('href');
+            idUsuarioEditar = urlDestino.split('=')[1];
         }
-        $('#modalVerificacion').modal('show');
+        const modal = new bootstrap.Modal(document.getElementById('modalVerificacion'));
+        modal.show();
     });
 
-    // Manejar el botón de verificar
-    $('#btnVerificar').on('click', function() {
+    // Función para verificar la contraseña
+    function verificarPassword() {
         const password = $('#password').val();
         
         $.ajax({
@@ -111,7 +115,8 @@ $(document).ready(function() {
             type: 'POST',
             data: {
                 action: 'verificar_password',
-                password: password
+                password: password,
+                id_usuario: idUsuarioEditar
             },
             dataType: 'json',
             success: function(response) {
@@ -138,12 +143,28 @@ $(document).ready(function() {
                 }
             }
         });
+    }
+
+    // Manejar el botón de verificar
+    $('#btnVerificar').on('click', verificarPassword);
+
+    // Manejar la tecla Enter en el campo de contraseña
+    $('#password').on('keypress', function(e) {
+        if (e.which === 13) { // 13 es el código de la tecla Enter
+            e.preventDefault();
+            verificarPassword();
+        }
     });
 
     // Limpiar el campo de contraseña cuando se cierra el modal
     $('#modalVerificacion').on('hidden.bs.modal', function() {
         $('#password').val('');
         notificacionMostrada = false;
+    });
+
+    // Enfocar el campo de contraseña cuando el modal se muestre
+    $('#modalVerificacion').on('shown.bs.modal', function() {
+        $('#password').focus();
     });
 });
 </script>

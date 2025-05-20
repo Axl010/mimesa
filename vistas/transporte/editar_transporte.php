@@ -31,7 +31,7 @@
                         <a href="vista_transporte.php" class="button-back">
                             <i class="fas fa-arrow-left"></i>
                         </a>
-                        <h2 class="h4 ml-1">Editar Transporte</h2>
+                        <h2 class="h4 ml-1">Editar Vehículo</h2>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-8 col-sm-12 mb-3">

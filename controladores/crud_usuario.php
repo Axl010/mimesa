@@ -144,21 +144,18 @@
         header('Content-Type: application/json');
         
         try {
-            // Verificar si la sesión está activa
-            if (!isset($_SESSION['id_usuario'])) {
-                error_log("Sesión no iniciada. ID de sesión: " . session_id());
-                error_log("Contenido de la sesión: " . print_r($_SESSION, true));
-                throw new Exception("Sesión no iniciada");
-            }
-
             if (!isset($_POST['password']) || empty($_POST['password'])) {
                 throw new Exception("La contraseña es requerida");
             }
 
+            if (!isset($_POST['id_usuario']) || empty($_POST['id_usuario'])) {
+                throw new Exception("ID de usuario requerido");
+            }
+
             $password = $_POST['password'];
-            $id_usuario = $_SESSION['id_usuario'];
+            $id_usuario = $_POST['id_usuario'];
             
-            // Obtener la contraseña del usuario actual
+            // Obtener la contraseña del usuario que se está editando
             $sql = "SELECT password FROM usuarios WHERE id_usuario = :id_usuario";
             $stmt = $conexion->prepare($sql);
             $stmt->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
@@ -169,7 +166,7 @@
                 throw new Exception("Usuario no encontrado");
             }
             
-            // Verificar la contraseña usando password_verify como en el login
+            // Verificar la contraseña
             if (password_verify($password, $usuario['password'])) {
                 echo json_encode(['success' => true]);
             } else {

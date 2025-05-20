@@ -6,10 +6,10 @@
 <section class="content-header mb-3">
         <div class="d-flex flex-wrap justify-content-between align-items-center ml-3 mb-3">
             <h2 class="h3 mb-0">
-                Transporte
+                Vehículos
             </h2>
             <a href="crear_transporte.php" class="btn btn-dark btn-sm mr-3 info d-flex align-items-center justify-content-center" tabindex="1">
-                <i class="fa fa-plus mr-2"></i>Agregar Transporte    
+                <i class="fa fa-plus mr-2"></i>Agregar Vehículo    
             </a>
         </div>
 </section>

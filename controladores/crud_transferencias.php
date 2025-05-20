@@ -13,6 +13,11 @@
     $vehiculos->execute();
     $lista_vehiculos = $vehiculos->fetchAll(PDO::FETCH_ASSOC);
 
+    // Lista de transportes
+    $transportes = $conexion->prepare("SELECT id_transporte, codigo_transporte, nombre FROM transportes ORDER BY nombre ASC");
+    $transportes->execute();
+    $lista_transportes = $transportes->fetchAll(PDO::FETCH_ASSOC);
+
     // Lista de clientes
     $clientes = $conexion->prepare("SELECT id_cliente, nombre, razon_social, documento_tipo, documento_numero FROM clientes WHERE estado = 'activo' ORDER BY nombre ASC");
     $clientes->execute();
@@ -45,7 +50,7 @@
                      t.id_responsable, t.origen, t.id_cliente, t.direccion_destino, 
                      t.observacion, t.estado, t.fecha_creacion,
                      c.nombre, c.region, v.tipo, v.placa, con.nombre, con.cedula
-            ORDER BY t.fecha_creacion DESC";
+            ORDER BY t.id_transferencia DESC";
     $stmt = $conexion->prepare($sql);
     $stmt->execute();
     $transferencias = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -86,6 +91,7 @@
             // Obtener datos del formulario
             $fecha_despacho = $_POST['fecha_despacho'];
             $id_vehiculo = $_POST['id_vehiculo'];
+            $id_transporte = $_POST['id_transporte'];
             $origen = $_POST['origen'];
             $id_cliente = $_POST['id_cliente'];
             $observacion = isset($_POST['observacion']) ? trim($_POST['observacion']) : '';
@@ -100,6 +106,7 @@
                                 fecha_creacion,
                                 fecha_despacho,
                                 id_vehiculo,
+                                id_transporte,
                                 id_conductor,
                                 origen,
                                 id_cliente,
@@ -109,6 +116,7 @@
                                 NOW(),
                                 :fecha_despacho,
                                 :id_vehiculo,
+                                :id_transporte,
                                 :id_conductor,
                                 :origen,
                                 :id_cliente,
@@ -119,6 +127,7 @@
             $stmt_transferencia = $conexion->prepare($sql_transferencia);
             $stmt_transferencia->bindParam(':fecha_despacho', $fecha_despacho, PDO::PARAM_STR);
             $stmt_transferencia->bindParam(':id_vehiculo', $id_vehiculo, PDO::PARAM_INT);
+            $stmt_transferencia->bindParam(':id_transporte', $id_transporte, PDO::PARAM_INT);
             $stmt_transferencia->bindParam(':id_conductor', $_POST['id_conductor'], PDO::PARAM_INT);
             $stmt_transferencia->bindParam(':origen', $origen, PDO::PARAM_STR);
             $stmt_transferencia->bindParam(':id_cliente', $id_cliente, PDO::PARAM_INT);
@@ -253,11 +262,13 @@
                                   v.tipo as tipo_vehiculo, 
                                   v.placa as placa_vehiculo,
                                   con.nombre as nombre_conductor, 
-                                  con.cedula as cedula_conductor
+                                  con.cedula as cedula_conductor,
+                                  tr.nombre as nombre_transporte
                                   FROM transferencias t 
                                   LEFT JOIN clientes c ON t.id_cliente = c.id_cliente 
                                   LEFT JOIN vehiculos v ON t.id_vehiculo = v.id_vehiculo 
                                   LEFT JOIN conductores con ON t.id_conductor = con.id_conductor
+                                  LEFT JOIN transportes tr ON t.id_transporte = tr.id_transporte
                                   WHERE t.id_transferencia = :id_transferencia";
             
             $stmt_transferencia = $conexion->prepare($query_transferencia);

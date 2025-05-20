@@ -11,9 +11,7 @@
 ?>
 <!doctype html>
 <html>
-    <head>
-        <link rel="icon" type="image/x-icon" href="img/favicon.ico">
-        <link rel="shortcut icon" href="#" />   
+    <head> 
         <meta charset="utf-8">
         <meta name="author" content="">
         <meta name="description" content="">
